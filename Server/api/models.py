@@ -3,19 +3,28 @@ from flask_security import Security, UserMixin, \
     RoleMixin, login_required, current_user
 from datetime import datetime
 from flask.ext.security.utils import encrypt_password
+import hashlib
+
+VEHICLE = {
+    1: 'two_wheeler',
+    2: 'four_wheeler',
+    3: 'heavy_vehicle'
+}
 
 
 class Cost(db.Document):
+    parking_lot_name = db.StringField(max_length=100)
     two_wheeler = db.IntField()
     four_wheeler = db.IntField()
     heavy_vehicle = db.IntField()
 
     def __str__(self):
-        return "two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(self.two_wheeler, self.four_wheeler, self.heavy_vehicle)
+        return "Parking: {} two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(self.parking_lot_name, self.two_wheeler, self.four_wheeler, self.heavy_vehicle)
 
 
-class Transaction(db.EmbeddedDocument):
+class Transaction(db.Document):
     cost = db.ReferenceField(Cost, dbref=False)
+    QR_CODE_DATA = db.StringField()
     total_cost = db.IntField()
     entry_time_stamp = db.DateTimeField()
     exit_time_stamp = db.DateTimeField()
@@ -23,9 +32,33 @@ class Transaction(db.EmbeddedDocument):
     def __str__(self):
         return "cost: {}, entry: {}, exit: {}".format(self.cost, self.entry_time_stamp, self.exit_time_stamp)
 
+    # def save(self, *args, **kwargs):
+    #     pass
+
+
+class Vehicle(db.EmbeddedDocument):
+    vid = db.IntField(unique=True)
+    vehicle_type = db.IntField(choices=VEHICLE.items())
+
+    def __unicode__(self):
+        return str(self.vid)
+
+    def get_dict(self):
+        return {'vid': self.vid,
+                'vehicle_type': self.vehicle_type,
+                }
+
+    def __repr__(self):
+        return 'vid ' + str(self.vid)
+
     def save(self, *args, **kwargs):
-        if not entry_time_stamp:
-            entry_time_stamp = datetime.now()
+        if self.vid == None:
+            try:
+                self.vid = self.__class__.objects.order_by('-vid')[0].vid + 1
+            except IndexError:
+                self.vid = Vehicle.objects.count() + 1
+
+        super(Vehicle, self).save(*args, **kwargs)
 
 
 class Customer(db.Document):
@@ -40,7 +73,10 @@ class Customer(db.Document):
     # vehicle_id = [vid1, vid2]
     # Last Transaction = { 'cost': '', 'time': '', 'date':''}
     QR_CODE_DATA = db.StringField(max_length=200)
-    transactions = db.ListField(db.EmbeddedDocumentField(Transaction))
+    vehicles = db.ListField(db.EmbeddedDocumentField(Vehicle))
+    # transactions = db.ListField(db.EmbeddedDocumentField(Transaction))
+    transactions = db.ListField(db.ReferenceField(Transaction, dbref=False))
+
 
     def __unicode__(self):
         return str(self.cid)
@@ -65,33 +101,11 @@ class Customer(db.Document):
         if not self.created_on:
             self.created_on = datetime.now()
         self.modified_on = datetime.now()
-        self.QR_CODE_DATA = encrypt_password(str(self.created_on))
+        if not self.QR_CODE_DATA:
+            self.QR_CODE_DATA = hashlib.sha1(str(self.cid) + str(self.created_on)).hexdigest()
         super(Customer, self).save(*args, **kwargs)
 
 
-class Vehicle(db.Document):
-    vid = db.IntField(unique=True)
-    vehicle_type = db.StringField(max_length=100)
-
-    def __unicode__(self):
-        return str(self.vid)
-
-    def get_dict(self):
-        return {'vid': self.vid,
-                'vehicle_type': self.vehicle_type,
-                }
-
-    def __repr__(self):
-        return 'vid ' + str(self.vid)
-
-    def save(self, *args, **kwargs):
-        if self.vid == None:
-            try:
-                self.vid = self.__class__.objects.order_by('-vid')[0].vid + 1
-            except IndexError:
-                self.vid = Vehicle.objects.count() + 1
-
-        super(Vehicle, self).save(*args, **kwargs)
 
 
 # class Documents(db.Documents):
