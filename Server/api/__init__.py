@@ -29,6 +29,7 @@ app.config['SECURITY_PASSWORD_SALT'] = 'SECURITY_PASSWORD_SALT'
 
 # app.config['SECURITY_POST_LOGIN_VIEW'] = environ['SECURITY_POST_LOGIN_VIEW']
 # app.config['SECURITY_POST_LOGIN_VIEW'] = environ['SECURITY_POST_LOGIN_VIEW']
+app.config['SECURITY_POST_LOGIN_VIEW'] = '/admin/customer/'
 
 db.init_app(app)
 admin.init_app(app)

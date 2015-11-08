@@ -5,11 +5,11 @@ from datetime import datetime
 from flask.ext.security.utils import encrypt_password
 import hashlib
 
-VEHICLES = [
+VEHICLES = (
     'two_wheeler',
     'four_wheeler',
     'heavy_vehicle'
-]
+)
 
 
 class Cost(db.Document):
