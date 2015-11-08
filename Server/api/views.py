@@ -23,19 +23,20 @@ def register_customer():
         c.last_name = json_request['last_name']
         c.address = json_request['address']
         c.contact_no = json_request['contact_no']
+        c.driving_licence_link = json_request['driving_licence_link']
         vehicles = json_request['vehicles']
-        if int(c.contact_no) > 1000000000 and int(c.contact_no) <= 9999999999:
-            c.save()
-        else:
+        if not(int(c.contact_no) > 1000000000 and int(c.contact_no) <= 9999999999):
             return Response(json.dumps({"Message": "Contact no. not valid"}), status=200,
                             content_type="application/json")
         for vehicle in vehicles:
             v = Vehicle()
             v.vehicle_type = vehicle['vehicle_type']
             v.vehicle_number = vehicle['vehicle_number']
+            v.vehicle_rc_link = vehicle['vehicle_rc_link']
             v.save()
             c.vehicles.append(v)
         # c = Customer.objects.all().limit(1)
+        c.save()
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA}), status=200,
                             content_type="application/json")
 
@@ -153,6 +154,7 @@ def make_transaction_on_exit():
                 transaction.total_cost = transaction.cost.heavy_vehicles * total_time
             print(transaction.total_cost)
             transaction.active = False
+            c.latest_transaction_cost = transaction.total_cost
             transaction.save()
             c.transactions.append(transaction)
             # print('transaction ' + str(transaction))
@@ -168,9 +170,13 @@ def get_latest_transaction_cost():
     if request.method == 'POST':
         json_request = json.loads(request.data)
         QR_CODE_DATA = json_request['QR_CODE_DATA']
-        transaction = Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA)
-        print(transaction)
-        total_cost = get_transaction_cost(transaction)
+        c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        total_cost = c.latest_transaction_cost
+        # transaction = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA).limit(1)
+        # print(transaction)
+        # for t in transaction:
+        #     print(t)
+        #     total_cost = get_transaction_cost(t)
         # print(transaction._get_as_pymongo())
         return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
@@ -231,6 +237,7 @@ def create_dict(allCustomer):
         d['last_name'] = item.last_name
         d['contact_no'] = item.contact_no
         d['address'] = item.address
+        d['driving_licence_link'] = item.driving_licence_link
         d['vehicles'] = item.vehicles
         d['transactions'] = item.transactions
         result.append(d)
@@ -243,11 +250,12 @@ def create_single_customer_dict(SingleCustomer):
     d['last_name'] = SingleCustomer.last_name
     d['contact_no'] = SingleCustomer.contact_no
     d['address'] = SingleCustomer.address
+    d['driving_licence_link'] = SingleCustomer.driving_licence_link
     d['vehicles'] = SingleCustomer.vehicles
     d['transactions'] = SingleCustomer.transactions
     return d
 
-def get_transaction_cost(SingleTransaction):
-    # print(dir(SingleTransaction))
-    total_cost = SingleTransaction.total_cost
-    return total_cost
+# def get_transaction_cost(SingleTransaction):
+#     # print(dir(SingleTransaction))
+#     total_cost = SingleTransaction.latest_transaction_cost
+#     return total_cost

@@ -19,7 +19,7 @@ class TransactionView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
+    column_list = ('QR_CODE_DATA', 'cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
     decorators = [login_required]
 
     # form_widget_args = {'cost': {'disabled': True}, 
@@ -41,7 +41,9 @@ class CustomerView(ModelView):
     form_widget_args = {'cid': {'disabled': True}, 
                         'created_on': {'disabled': True}, 
                         'modified_on': {'disabled': True},
-                        'QR_CODE_DATA': {'disabled': True}}
+                        'QR_CODE_DATA': {'disabled': True},
+                        'latest_transaction_cost': {'disabled': True},
+                        'driving_licence_link': {'disabled': True}}
     # form_subdocuments = {
     #                 'vehicles': {
     #                     'form_subdocuments': {
@@ -89,8 +91,18 @@ class UserView(ModelView):
     def is_accessible(self):
         return current_user.has_role("super_admin")
 
+class RoleView(ModelView):
+    can_create = True
+    can_delete = True
+    can_edit = True
+    decorators = [login_required]
+
+    def is_accessible(self):
+        return current_user.has_role("super_admin")
+
 api.admin.add_view(CustomerView(api.models.Customer))
 api.admin.add_view(VehicleView(api.models.Vehicle))
 api.admin.add_view(CostView(api.models.Cost))
-api.admin.add_view(UserView(api.models.User))
 api.admin.add_view(TransactionView(api.models.Transaction))
+api.admin.add_view(UserView(api.models.User))
+api.admin.add_view(RoleView(api.models.Role))

@@ -49,6 +49,7 @@ class Vehicle(db.Document):
     vid = db.IntField(unique=True)
     vehicle_type = db.StringField(choices=VEHICLES)
     vehicle_number = db.StringField()
+    vehicle_rc_link = db.URLField()
 
     def __unicode__(self):
         return str(self.vehicle_type) + ": " + str(self.vehicle_number)
@@ -57,7 +58,8 @@ class Vehicle(db.Document):
         return {
                 'vid': self.vid,
                 'vehicle_type': self.vehicle_type,
-                'vehicle_number': self.vehicle_number
+                'vehicle_number': self.vehicle_number,
+                'vehicle_rc_link': self.vehicle_rc_link
                 }
 
     def __repr__(self):
@@ -80,6 +82,8 @@ class Customer(db.Document):
     address = db.StringField(max_length=500)
     created_on = db.DateTimeField()
     modified_on = db.DateTimeField()
+    latest_transaction_cost = db.IntField()
+    driving_licence_link = db.URLField()
     # documents = ['doc1', 'doc2']
     # vehicle_id = [vid1, vid2]
     # Last Transaction = { 'cost': '', 'time': '', 'date':''}
@@ -97,7 +101,9 @@ class Customer(db.Document):
                 'first_name': self.first_name,
                 'last_name': self.last_name,
                 'contact_no': self.contact_no,
-                'address': self.address
+                'address': self.address,
+                'latest_transaction_cost': latest_transaction_cost,
+                'driving_licence_link':self.driving_licence_link
                 }
 
     def __repr__(self):
