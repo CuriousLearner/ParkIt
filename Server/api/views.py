@@ -224,7 +224,7 @@ def get_latest_transaction_cost():
         try:
             c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
         except:
-            return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=200,
+            return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=404,
                     content_type="application/json")
         total_cost = c.latest_transaction_cost
         # transaction = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA).limit(1)
