@@ -33,6 +33,14 @@ class Transaction(db.Document):
     def __str__(self):
         return "total_cost: {}, cost: {}, entry: {}, exit: {}".format(self.total_cost, self.cost, self.entry_time_stamp, self.exit_time_stamp)
 
+    def get_dict(self):
+        return {
+                'total_cost': self.total_cost,
+                'entry_time_stamp': self.entry_time_stamp,
+                'exit_time_stamp': self.exit_time_stamp,
+                'parking_lot_name': self.cost.parking_lot_name
+                }
+
     # def save(self, *args, **kwargs):
     #     pass
 

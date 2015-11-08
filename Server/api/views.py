@@ -56,7 +56,11 @@ def get_single_customer(cid):
     '''
     returns all the events with GET request
     '''
-    SingleCustomer = Customer.objects.get(cid=cid)
+    try:
+        SingleCustomer = Customer.objects.get(cid=cid)
+    except:
+        return Response(json.dumps({"Message": "No Customer found"}), status=200,
+                        content_type="application/json")
     x = create_single_customer_dict(SingleCustomer)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                     content_type="application/json")
@@ -120,33 +124,40 @@ def make_transaction_on_exit():
         parking_lot_name = json_request['parking_lot_name']
         c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
         # print(c.transactions)
-        transactions = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA, active=True)
-        cost_obj = Cost.objects.get(parking_lot_name=parking_lot_name)
+        # Checking if there is any active transaction
+        try:
+            transaction = Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA, active=True)
+        except:
+            return Response(json.dumps({"Message": "No active transaction found"}, cls=PythonJSONEncoder), status=200,
+                    content_type="application/json")
         # print('cost ' + str(cost_obj))
-        for transaction in transactions:
+        # for transaction in transactions:
             # print(type(transaction))
-            if not transaction.exit_time_stamp:
-                transaction['exit_time_stamp'] = datetime.now()
-                transaction.cost = cost_obj
-                td = transaction['exit_time_stamp'] - transaction['entry_time_stamp']
-                total_time = (td.days * 24) + ceil(td.seconds/3600)
-                # print(td.seconds//60, (td.seconds//60)%60)
-                # print('total_time' + str(total_time))
-                # print('transaction ' + str(transaction))
-                # transaction.total_cost = 0
-                if vehicle_type == 'two_wheeler':
-                    transaction.total_cost = transaction.cost.two_wheeler * total_time
-                elif vehicle_type == 'four_wheeler':
-                    transaction.total_cost = transaction.cost.four_wheeler * total_time
-                elif vehicle_type == 'heavy_vehicles':
-                    transaction.total_cost = transaction.cost.heavy_vehicles * total_time
-                print(transaction.total_cost)
-                transaction.active = False
-                transaction.save()
-                c.transactions.append(transaction)
-                # print('transaction ' + str(transaction))
-                # print(type(transaction))
-                c.save()
+        if not transaction.exit_time_stamp:
+            if parking_lot_name != transaction.cost['parking_lot_name']:
+                return Response(json.dumps({"Message": "You entered from somewhere else"}, cls=PythonJSONEncoder), status=200,
+                    content_type="application/json")
+            transaction['exit_time_stamp'] = datetime.now()
+            transaction.cost = Cost.objects.get(parking_lot_name=parking_lot_name)
+            td = transaction['exit_time_stamp'] - transaction['entry_time_stamp']
+            total_time = (td.days * 24) + ceil(td.seconds/3600)
+            # print(td.seconds//60, (td.seconds//60)%60)
+            # print('total_time' + str(total_time))
+            # print('transaction ' + str(transaction))
+            # transaction.total_cost = 0
+            if vehicle_type == 'two_wheeler':
+                transaction.total_cost = transaction.cost.two_wheeler * total_time
+            elif vehicle_type == 'four_wheeler':
+                transaction.total_cost = transaction.cost.four_wheeler * total_time
+            elif vehicle_type == 'heavy_vehicles':
+                transaction.total_cost = transaction.cost.heavy_vehicles * total_time
+            print(transaction.total_cost)
+            transaction.active = False
+            transaction.save()
+            c.transactions.append(transaction)
+            # print('transaction ' + str(transaction))
+            # print(type(transaction))
+            c.save()
         return Response(json.dumps({"cost": transaction.total_cost}, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
@@ -191,6 +202,8 @@ class PythonJSONEncoder(json.JSONEncoder):
             return obj.get_dict()
         if isinstance(obj, Vehicle):
             return obj.get_dict()
+        if isinstance(obj, Transaction):
+            return obj.get_dict()
         elif isinstance(obj, datetime):
             return obj.isoformat()
         # elif isinstance(obj, datetime.date):
@@ -219,6 +232,7 @@ def create_dict(allCustomer):
         d['contact_no'] = item.contact_no
         d['address'] = item.address
         d['vehicles'] = item.vehicles
+        d['transactions'] = item.transactions
         result.append(d)
     return result
 
@@ -230,6 +244,7 @@ def create_single_customer_dict(SingleCustomer):
     d['contact_no'] = SingleCustomer.contact_no
     d['address'] = SingleCustomer.address
     d['vehicles'] = SingleCustomer.vehicles
+    d['transactions'] = SingleCustomer.transactions
     return d
 
 def get_transaction_cost(SingleTransaction):

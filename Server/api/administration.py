@@ -22,6 +22,12 @@ class TransactionView(ModelView):
     column_list = ('cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
     decorators = [login_required]
 
+    # form_widget_args = {'cost': {'disabled': True}, 
+    #                     'total_cost': {'disabled': True}, 
+    #                     'active': {'disabled': True},
+    #                     'entry_time_stamp': {'disabled': True},
+    #                     'exit_time_stamp': {'disabled': True}}
+
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
