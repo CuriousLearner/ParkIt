@@ -123,7 +123,11 @@ def make_transaction_on_exit():
         QR_CODE_DATA = json_request['QR_CODE_DATA']
         vehicle_type = json_request['vehicle_type']
         parking_lot_name = json_request['parking_lot_name']
-        c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        try:
+            c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        except:
+            return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=200,
+                    content_type="application/json")
         # print(c.transactions)
         # Checking if there is any active transaction
         try:
@@ -170,7 +174,11 @@ def get_latest_transaction_cost():
     if request.method == 'POST':
         json_request = json.loads(request.data)
         QR_CODE_DATA = json_request['QR_CODE_DATA']
-        c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        try:
+            c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        except:
+            return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=200,
+                    content_type="application/json")
         total_cost = c.latest_transaction_cost
         # transaction = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA).limit(1)
         # print(transaction)

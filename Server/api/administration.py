@@ -16,9 +16,9 @@ from datetime import datetime
 #     form_widget_args = {''}
 
 class TransactionView(ModelView):
-    can_create = True
+    can_create = False
     can_delete = True
-    can_edit = True
+    can_edit = False
     column_list = ('QR_CODE_DATA', 'cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
     decorators = [login_required]
 
@@ -44,6 +44,7 @@ class CustomerView(ModelView):
                         'QR_CODE_DATA': {'disabled': True},
                         'latest_transaction_cost': {'disabled': True},
                         'driving_licence_link': {'disabled': True}}
+    column_filters = ( 'created_on','modified_on', 'cid', 'driving_licence_link', 'first_name', 'last_name')
     # form_subdocuments = {
     #                 'vehicles': {
     #                     'form_subdocuments': {
@@ -67,6 +68,8 @@ class VehicleView(ModelView):
     decorators = [login_required]
     form_widget_args = {'vid': {'disabled': True}}
 
+    column_filters = ( 'vehicle_number','vehicle_type')
+
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
@@ -78,6 +81,8 @@ class CostView(ModelView):
     column_list = ('parking_lot_name', 'two_wheeler', 'four_wheeler', 'heavy_vehicle')
     decorators = [login_required]
 
+    column_filters = ('parking_lot_name',)
+
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
@@ -87,6 +92,8 @@ class UserView(ModelView):
     can_delete = True
     can_edit = True
     decorators = [login_required]
+
+    column_filters = ('email',)
 
     def is_accessible(self):
         return current_user.has_role("super_admin")
