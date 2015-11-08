@@ -19,7 +19,7 @@ class TransactionView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('cost', 'total_cost', 'entry_time_stamp', 'exit_time_stamp')
+    column_list = ('cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
     decorators = [login_required]
 
     def is_accessible(self):
@@ -36,31 +36,31 @@ class CustomerView(ModelView):
                         'created_on': {'disabled': True}, 
                         'modified_on': {'disabled': True},
                         'QR_CODE_DATA': {'disabled': True}}
-    form_subdocuments = {
-                    'vehicles': {
-                        'form_subdocuments': {
-                            None: {
-                                'form_columns': ('vehicle_type',),
-                                # 'form_widget_args': {'vid': {'disabled': True}}
-                            }
-                        }
-                    }
-                }
+    # form_subdocuments = {
+    #                 'vehicles': {
+    #                     'form_subdocuments': {
+    #                         None: {
+    #                             'form_columns': ('vehicle_type',),
+    #                             # 'form_widget_args': {'vid': {'disabled': True}}
+    #                         }
+    #                     }
+    #                 }
+    #             }
 
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
 
-# class VehicleView(ModelView):
-#     can_create = True
-#     can_delete = True
-#     can_edit = True
-#     column_list = ('vid', 'vehicle_type')
-#     decorators = [login_required]
-#     form_widget_args = {'vid': {'disabled': True}}
+class VehicleView(ModelView):
+    can_create = True
+    can_delete = True
+    can_edit = True
+    column_list = ('vid', 'vehicle_type', 'vehicle_number')
+    decorators = [login_required]
+    form_widget_args = {'vid': {'disabled': True}}
 
-#     def is_accessible(self):
-#         return current_user.has_role("admin") or current_user.has_role("super_admin")
+    def is_accessible(self):
+        return current_user.has_role("admin") or current_user.has_role("super_admin")
 
 
 class CostView(ModelView):
@@ -84,7 +84,7 @@ class UserView(ModelView):
         return current_user.has_role("super_admin")
 
 api.admin.add_view(CustomerView(api.models.Customer))
-# api.admin.add_view(VehicleView(api.models.Vehicle))
+api.admin.add_view(VehicleView(api.models.Vehicle))
 api.admin.add_view(CostView(api.models.Cost))
 api.admin.add_view(UserView(api.models.User))
 api.admin.add_view(TransactionView(api.models.Transaction))

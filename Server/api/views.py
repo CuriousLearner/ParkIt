@@ -21,9 +21,20 @@ def register_customer():
         c = Customer()
         c.first_name = json_request['first_name']
         c.last_name = json_request['last_name']
-        c.contact_no = json_request['contact_no']
         c.address = json_request['address']
-        c.save()
+        c.contact_no = json_request['contact_no']
+        vehicles = json_request['vehicles']
+        if int(c.contact_no) > 1000000000 and int(c.contact_no) <= 9999999999:
+            c.save()
+        else:
+            return Response(json.dumps({"Message": "Contact no. not valid"}), status=200,
+                            content_type="application/json")
+        for vehicle in vehicles:
+            v = Vehicle()
+            v.vehicle_type = vehicle['vehicle_type']
+            v.vehicle_number = vehicle['vehicle_number']
+            v.save()
+            c.vehicles.append(v)
         # c = Customer.objects.all().limit(1)
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA}), status=200,
                             content_type="application/json")
@@ -40,6 +51,7 @@ def get_customer():
 
 
 @app.route('/api/customer/cid/<int:cid>')
+@app.route('/api/customer/cid/<int:cid>/')
 def get_single_customer(cid):
     '''
     returns all the events with GET request
@@ -63,22 +75,44 @@ def get_customer_from_qr_and_enter_parking():
         # vehicle_type = json_request['vehicle_type']
         parking_lot_name = json_request['parking_lot_name']
         QR_CODE_DATA = json_request['QR_CODE_DATA']
-        SingleCustomer = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        # Check if customer is there
+        try:
+            SingleCustomer = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        except:
+            return Response(json.dumps({"Message": "User not found"}, cls=PythonJSONEncoder), status=200,
+                        content_type="application/json")
+        # Check if already active transaction for user
+        # if Transaction.objects.count() == 0:
+        #     pass # No Transactions yet in the entire table
+        # else:
+        try:
+            # Check if any transaction is there for this user
+            Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+            try:
+                # Check for active transaction
+                if Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA, active=True).count() == 1:
+                    raise Error
+            except:
+                return Response(json.dumps({"Message": "Already an active transaction found for current user"}, cls=PythonJSONEncoder), status=200,
+                            content_type="application/json")
+        except:
+            pass # No Transactions yet for this user
         x = create_single_customer_dict(SingleCustomer)
         cost_obj = Cost.objects.get(parking_lot_name=parking_lot_name)
         t = Transaction()
+        t.active = True
         t.QR_CODE_DATA = QR_CODE_DATA
         t.entry_time_stamp = datetime.now()
         t.cost = cost_obj
         t.save()
-        print('t : ' + str(t))
+        # print('t : ' + str(t))
         return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
 
 @app.route('/api/customer/exit', methods=['GET', 'POST'])
 @app.route('/api/customer/exit/', methods=['GET', 'POST'])
-def make_transaction():
+def make_transaction_on_exit():
     if request.method == 'POST':
         json_request = json.loads(request.data)
         QR_CODE_DATA = json_request['QR_CODE_DATA']
@@ -86,7 +120,7 @@ def make_transaction():
         parking_lot_name = json_request['parking_lot_name']
         c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
         # print(c.transactions)
-        transactions = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA)
+        transactions = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA, active=True)
         cost_obj = Cost.objects.get(parking_lot_name=parking_lot_name)
         # print('cost ' + str(cost_obj))
         for transaction in transactions:
@@ -107,6 +141,7 @@ def make_transaction():
                 elif vehicle_type == 'heavy_vehicles':
                     transaction.total_cost = transaction.cost.heavy_vehicles * total_time
                 print(transaction.total_cost)
+                transaction.active = False
                 transaction.save()
                 c.transactions.append(transaction)
                 # print('transaction ' + str(transaction))
@@ -122,20 +157,21 @@ def get_latest_transaction_cost():
     if request.method == 'POST':
         json_request = json.loads(request.data)
         QR_CODE_DATA = json_request['QR_CODE_DATA']
-        transaction = Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA).limit(1)
-        # t = create_transaction_dict(transaction)
-        print(transaction._get_as_pymongo())
-        return Response(json.dumps({"cost": t.total_cost}, cls=PythonJSONEncoder), status=200,
+        transaction = Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        print(transaction)
+        total_cost = get_transaction_cost(transaction)
+        # print(transaction._get_as_pymongo())
+        return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
 
 
-@app.route('/api/vehicles/<int:vehicle_id>')
-def get_single_vehicle(vehicle_id):
-    singleVehicle = Vehicle.objects(vid=vehicle_id)
-    result = create_dict(singleVehicle)
-    return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
-                    content_type="application/json")
+# @app.route('/api/vehicles/<int:vehicle_id>')
+# def get_single_vehicle(vehicle_id):
+#     singleVehicle = Vehicle.objects(vid=vehicle_id)
+#     result = create_dict(singleVehicle)
+#     return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
+#                     content_type="application/json")
 
 
 @app.errorhandler(404)
@@ -157,10 +193,10 @@ class PythonJSONEncoder(json.JSONEncoder):
             return obj.get_dict()
         elif isinstance(obj, datetime):
             return obj.isoformat()
-        elif isinstance(obj, datetime.date):
-            return obj.isoformat()
-        elif isinstance(obj, datetime.time):
-            return obj.isoformat()
+        # elif isinstance(obj, datetime.date):
+        #     return obj.isoformat()
+        # elif isinstance(obj, datetime.time):
+        #     return obj.isoformat()
         else:
             return repr(obj)
         return super(PythonJSONEncoder, self).default(obj)
@@ -182,6 +218,7 @@ def create_dict(allCustomer):
         d['last_name'] = item.last_name
         d['contact_no'] = item.contact_no
         d['address'] = item.address
+        d['vehicles'] = item.vehicles
         result.append(d)
     return result
 
@@ -195,8 +232,7 @@ def create_single_customer_dict(SingleCustomer):
     d['vehicles'] = SingleCustomer.vehicles
     return d
 
-def create_transaction_dict(SingleTransaction):
-    d = {}
-    print(dir(SingleTransaction))
-    d['cost'] = SingleTransaction.cost
-    return d
+def get_transaction_cost(SingleTransaction):
+    # print(dir(SingleTransaction))
+    total_cost = SingleTransaction.total_cost
+    return total_cost
