@@ -1,0 +1,52 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.parkit.parkit_client.ui.AccountFragment">
+
+    
+    <!-- TODO: Update blank fragment layout -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <Button
+            android:id="@+id/btn_dummy"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="95dp"
+            android:text="@string/label_logout" />
+
+
+        <TextView
+            android:textSize="15sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="55dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_account_details" />
+
+
+        <TextView
+            android:id="@+id/welcome_view"
+            android:textSize="15sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="55dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+
+
+
+    </LinearLayout>
+    
+    
+    
+    
+    
+</FrameLayout>
