@@ -10,8 +10,6 @@ import requests
 from flask.ext.security.utils import encrypt_password
 from math import ceil
 
-result = []  # Global result list to return result as JSON
-
 @app.route('/api/customer/register', methods=['GET', 'POST'])
 @app.route('/api/customer/register/', methods=['GET', 'POST'])
 def register_customer():
@@ -284,6 +282,12 @@ def get_latest_transaction_cost():
         return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
+@app.route('/api/parking/transactions/')
+def show_parking_transactions():
+    parking_objects = ParkingLot.objects.all()
+    x = create_parking_dict(parking_objects)
+    return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
+                        content_type="application/json")
 
 @app.errorhandler(404)
 def not_found(error):
@@ -304,12 +308,16 @@ class PythonJSONEncoder(json.JSONEncoder):
             return obj.get_dict()
         if isinstance(obj, Transaction):
             return obj.get_dict()
-        elif isinstance(obj, datetime):
-            return obj.isoformat()
+        if isinstance(obj, Cost):
+            return obj.get_dict()
+        if isinstance(obj, ParkingLot):
+            return obj.get_dict()
+        # elif isinstance(obj, datetime):
+        #     return repr(obj.isoformat())
         # elif isinstance(obj, datetime.date):
-        #     return obj.isoformat()
+        #     return repr(obj.isoformat())
         # elif isinstance(obj, datetime.time):
-        #     return obj.isoformat()
+        #     return repr(obj.isoformat())
         else:
             return repr(obj)
         return super(PythonJSONEncoder, self).default(obj)
@@ -322,7 +330,6 @@ def unjsonify(dct):
 
 
 def create_dict(allCustomer):
-    global result  # To store the result of all Customer
     result = []  # Empty for each call
     for item in allCustomer:
         d = {}  # To make a dictionary for JSON Response
@@ -348,6 +355,15 @@ def create_single_customer_dict(SingleCustomer):
     d['vehicles'] = SingleCustomer.vehicles
     d['transactions'] = SingleCustomer.transactions
     return d
+
+def create_parking_dict(parkingObjects):
+    d = {}
+    res = []
+    for item in parkingObjects:
+        d['parking_lot_name'] = item.parking_lot_name
+        d['transactions'] = item.transactions
+        res.append(d)
+    return res
 
 
 def check_auth(token):

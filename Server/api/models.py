@@ -21,6 +21,14 @@ class Cost(db.Document):
     def __str__(self):
         return "COST FOR two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(self.two_wheeler, self.four_wheeler, self.heavy_vehicle)
 
+    def get_dict(self):
+        return {
+                'parking_lot_name': self.parking_lot_name,
+                'two_wheeler': self.two_wheeler,
+                'four_wheeler': self.four_wheeler,
+                'heavy_vehicle': self.heavy_vehicle
+                }
+
 
 class Transaction(db.Document):
     cost = db.ReferenceField(Cost, dbref=False)
@@ -42,9 +50,6 @@ class Transaction(db.Document):
                 'parking_lot_name': self.parking_lot_name
                 }
 
-    # def save(self, *args, **kwargs):
-    #     pass
-
 
 class ParkingLot(db.Document):
     parking_lot_name = db.StringField(max_length=100)
@@ -60,6 +65,11 @@ class ParkingLot(db.Document):
     def __str__(self):
         return "Parking: {} two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(self.parking_lot_name, self.cost.two_wheeler, self.cost.four_wheeler, self.cost.heavy_vehicle)
 
+    def get_dict(self):
+        return {
+                'parking_lot_name': self.parking_lot_name,
+                'transactions': self.transactions
+                }
 
 
 class Vehicle(db.Document):
@@ -101,12 +111,8 @@ class Customer(db.Document):
     modified_on = db.DateTimeField()
     latest_transaction_cost = db.IntField()
     driving_licence_link = db.URLField()
-    # documents = ['doc1', 'doc2']
-    # vehicle_id = [vid1, vid2]
-    # Last Transaction = { 'cost': '', 'time': '', 'date':''}
     QR_CODE_DATA = db.StringField(max_length=200)
     vehicles = db.ListField(db.ReferenceField(Vehicle, dbref=False), default=[])
-    # transactions = db.ListField(db.EmbeddedDocumentField(Transaction))
     transactions = db.ListField(db.ReferenceField(Transaction, dbref=False))
 
 
@@ -138,15 +144,6 @@ class Customer(db.Document):
         if not self.QR_CODE_DATA:
             self.QR_CODE_DATA = hashlib.sha1(str(self.cid) + str(self.created_on)).hexdigest()
         super(Customer, self).save(*args, **kwargs)
-
-
-# class Documents(db.Documents):
-#     user_id_card = db.UrlField()
-#     # vehicle_docs = 
-
-
-# class Vehicle_Docs(db.Document):
-#     vehicle_rc = db.UrlField() 
 
 
 class Role(db.Document, RoleMixin):
