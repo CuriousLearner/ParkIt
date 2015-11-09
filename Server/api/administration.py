@@ -44,7 +44,7 @@ class CustomerView(ModelView):
                         'QR_CODE_DATA': {'disabled': True},
                         'latest_transaction_cost': {'disabled': True},
                         'driving_licence_link': {'disabled': True}}
-    column_filters = ( 'created_on','modified_on', 'cid', 'driving_licence_link', 'first_name', 'last_name')
+    column_filters = ('cid', 'driving_licence_link', 'first_name', 'last_name')
     # form_subdocuments = {
     #                 'vehicles': {
     #                     'form_subdocuments': {

@@ -32,8 +32,12 @@ def register_customer():
         c.contact_no = json_request['contact_no']
         c.driving_licence_link = json_request['driving_licence_link']
         vehicles = json_request['vehicles']
-        if not(int(c.contact_no) > 1000000000 and int(c.contact_no) <= 9999999999):
-            return Response(json.dumps({"Message": "Contact no. not valid"}), status=200,
+        try:
+            if not(int(c.contact_no) > 1000000000 and int(c.contact_no) <= 9999999999):
+                return Response(json.dumps({"Message": "Contact no. not valid"}), status=400,
+                                content_type="application/json")
+        except:
+            return Response(json.dumps({"Message": "Contact no. not valid"}), status=400,
                             content_type="application/json")
         for vehicle in vehicles:
             v = Vehicle()
@@ -67,8 +71,8 @@ def get_customer():
                         content_type="application/json")
 
 
-@app.route('/api/customer/cid/<int:cid>')
-@app.route('/api/customer/cid/<int:cid>/')
+@app.route('/api/customer/cid/<int:cid>', methods=['GET', 'POST'])
+@app.route('/api/customer/cid/<int:cid>/', methods=['GET', 'POST'])
 def get_single_customer(cid):
     '''
     returns all the events with GET request
