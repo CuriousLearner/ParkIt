@@ -1,0 +1,40 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    defaultConfig {
+        applicationId "com.parkit.parkit_client"
+        minSdkVersion 17
+        targetSdkVersion 22
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile 'com.android.support:appcompat-v7:22.1.1'
+    // material navigation drawer
+    compile 'it.neokree:MaterialNavigationDrawer:1.3.3'
+    // iconify
+    compile 'com.joanzapata.android:android-iconify:1.0.9'
+    // butter knife
+    compile 'com.jakewharton:butterknife:7.0.1'
+    // retrofit 1.9
+    compile 'com.squareup.retrofit:retrofit:1.9.0'
+    // Zxing as an aar
+    compile 'com.journeyapps:zxing-android-embedded:3.0.2@aar'
+    // ZXing 3.2
+    compile 'com.google.zxing:core:3.2.0'
+
+
+
+}
