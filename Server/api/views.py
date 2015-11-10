@@ -70,7 +70,7 @@ def get_customer():
             return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
                             content_type="application/json")
         allCustomer = Customer.objects.all()
-        create_dict(allCustomer)
+        result = create_dict(allCustomer)
         return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
