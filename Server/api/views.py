@@ -283,10 +283,33 @@ def get_latest_transaction_cost():
                         content_type="application/json")
 
 @app.route('/api/parking/transactions/')
-def show_parking_transactions():
+def show_all_parking_transactions():
     parking_objects = ParkingLot.objects.all()
     x = create_parking_dict(parking_objects)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
+                        content_type="application/json")
+
+@app.route('/api/parking/<parking_lot_name>')
+def show_single_parking_transactions(parking_lot_name):
+    parking_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
+    x = create_single_parking_dict(parking_obj)
+    return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
+                        content_type="application/json")
+
+@app.route('/api/parking/stats/<parking_lot_name>/')
+def show_parking_analysis(parking_lot_name):
+    from_exit_time_stamp = request.args.get('from_exit_time_stamp')
+    to_exit_time_stamp = request.args.get('to_exit_time_stamp')
+    from_year, from_month, from_day = from_exit_time_stamp.split('-')
+    to_year, to_month, to_day = to_exit_time_stamp.split('-')
+    from_date = datetime(int(from_year), int(from_month), int(from_day))
+    to_date = datetime(int(to_year), int(to_month), int(to_day))
+    transactions = Transaction.objects.filter(parking_lot_name=parking_lot_name, exit_time_stamp__gte=from_date, exit_time_stamp__lte=to_date)
+    total_cost = 0
+    no_of_transactions = len(transactions)
+    for transaction in transactions:
+        total_cost += transaction.total_cost
+    return Response(json.dumps({"total_cost": total_cost, "no_of_transactions": no_of_transactions}), status=200,
                         content_type="application/json")
 
 @app.errorhandler(404)
@@ -312,12 +335,8 @@ class PythonJSONEncoder(json.JSONEncoder):
             return obj.get_dict()
         if isinstance(obj, ParkingLot):
             return obj.get_dict()
-        # elif isinstance(obj, datetime):
-        #     return repr(obj.isoformat())
-        # elif isinstance(obj, datetime.date):
-        #     return repr(obj.isoformat())
-        # elif isinstance(obj, datetime.time):
-        #     return repr(obj.isoformat())
+        if isinstance(obj, datetime):
+            return obj.isoformat()
         else:
             return repr(obj)
         return super(PythonJSONEncoder, self).default(obj)
@@ -358,13 +377,18 @@ def create_single_customer_dict(SingleCustomer):
 
 def create_parking_dict(parkingObjects):
     d = {}
-    res = []
+    result = []
     for item in parkingObjects:
         d['parking_lot_name'] = item.parking_lot_name
         d['transactions'] = item.transactions
-        res.append(d)
-    return res
+        result.append(d)
+    return result
 
+def create_single_parking_dict(parking_obj):
+    d = {}
+    d['parking_lot_name'] = parking_obj.parking_lot_name
+    d['transactions'] = parking_obj.transactions
+    return d
 
 def check_auth(token):
     if token == "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM":

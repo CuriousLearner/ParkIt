@@ -14,14 +14,16 @@ class CostView(ModelView):
     column_list = ('parking_lot_name', 'two_wheeler', 'four_wheeler', 'heavy_vehicle')
     decorators = [login_required]
 
+    form_widget_args = {'parking_lot_name': {'disabled': True}}
+
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
 
 class TransactionView(ModelView):
     can_create = True
-    can_delete = False
-    can_edit = False
+    can_delete = True
+    can_edit = True
     column_list = ('QR_CODE_DATA', 'parking_lot_name', 'cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
     decorators = [login_required]
 
