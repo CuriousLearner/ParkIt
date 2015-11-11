@@ -10,18 +10,16 @@ import requests
 from flask.ext.security.utils import encrypt_password
 from math import ceil
 
+@app.route('/')
+def api_admin_panel_home():
+    return redirect('/admin')
+
 @app.route('/api/customer/register', methods=['GET', 'POST'])
 @app.route('/api/customer/register/', methods=['GET', 'POST'])
 def register_customer():
     if request.method == 'POST':
+        check_auth()
         json_request = json.loads(request.data)
-        try:
-            if not check_auth(json_request['token']):
-                return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
-                            content_type="application/json")
-        except KeyError:
-            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                            content_type="application/json")
         c = Customer()
         try:
             c.first_name = json_request['first_name']
@@ -55,49 +53,33 @@ def register_customer():
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA}), status=200,
                             content_type="application/json")
 
-@app.route('/api/customer/', methods=['GET', 'POST'])
+@app.route('/api/customer/')
 def get_customer():
     '''
     returns all the events with GET request
     '''
-    if request.method == 'POST':
-        json_request = json.loads(request.data)
-        try:
-            if not check_auth(json_request['token']):
-                return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
-                            content_type="application/json")
-        except KeyError:
-            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                            content_type="application/json")
-        allCustomer = Customer.objects.all()
-        result = create_dict(allCustomer)
-        return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
-                        content_type="application/json")
+    check_auth()
+    allCustomer = Customer.objects.all()
+    result = create_dict(allCustomer)
+    return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
+                    content_type="application/json")
 
 
-@app.route('/api/customer/cid/<int:cid>', methods=['GET', 'POST'])
-@app.route('/api/customer/cid/<int:cid>/', methods=['GET', 'POST'])
+@app.route('/api/customer/cid/<int:cid>')
+@app.route('/api/customer/cid/<int:cid>/')
 def get_single_customer(cid):
     '''
     returns all the events with GET request
     '''
-    if request.method == 'POST':
-        json_request = json.loads(request.data)
-        try:
-            if not check_auth(json_request['token']):
-                return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
-                            content_type="application/json")
-        except KeyError:
-            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                            content_type="application/json")
-        try:
-            SingleCustomer = Customer.objects.get(cid=cid)
-        except:
-            return Response(json.dumps({"Message": "No Customer found"}), status=404,
-                            content_type="application/json")
-        x = create_single_customer_dict(SingleCustomer)
-        return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
+    check_auth()
+    try:
+        SingleCustomer = Customer.objects.get(cid=cid)
+    except:
+        return Response(json.dumps({"Message": "No Customer found"}), status=404,
                         content_type="application/json")
+    x = create_single_customer_dict(SingleCustomer)
+    return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
+                    content_type="application/json")
 
 
 @app.route('/api/customer/entry', methods=['GET', 'POST'])
@@ -107,14 +89,8 @@ def get_customer_from_qr_and_enter_parking():
     returns all the events with GET request
     '''
     if request.method == 'POST':
+        check_auth()
         json_request = json.loads(request.data)
-        try:
-            if not check_auth(json_request['token']):
-                return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
-                            content_type="application/json")
-        except KeyError:
-            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                            content_type="application/json")
         try:
             parking_lot_name = json_request['parking_lot_name']
             QR_CODE_DATA = json_request['QR_CODE_DATA']
@@ -181,14 +157,8 @@ def get_customer_from_qr_and_enter_parking():
 @app.route('/api/customer/exit/', methods=['GET', 'POST'])
 def make_transaction_on_exit():
     if request.method == 'POST':
+        check_auth()
         json_request = json.loads(request.data)
-        try:
-            if not check_auth(json_request['token']):
-                return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
-                            content_type="application/json")
-        except KeyError:
-            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                            content_type="application/json")
         try:
             QR_CODE_DATA = json_request['QR_CODE_DATA']
             vehicle_type = json_request['vehicle_type']
@@ -256,34 +226,27 @@ def make_transaction_on_exit():
                         content_type="application/json")
 
 
-@app.route('/api/customer/transaction/cost', methods=['GET', 'POST'])
-@app.route('/api/customer/transaction/cost/', methods=['GET', 'POST'])
+@app.route('/api/customer/transaction/cost')
+@app.route('/api/customer/transaction/cost/')
 def get_latest_transaction_cost():
-    if request.method == 'POST':
-        json_request = json.loads(request.data)
-        try:
-            if not check_auth(json_request['token']):
-                return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+    check_auth()
+    try:
+        QR_CODE_DATA = request.args.get('QR_CODE_DATA')
+    except:
+        return Response(json.dumps({"Message": "QR_CODE_DATA not present"}), status=400,
                             content_type="application/json")
-        except KeyError:
-            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                            content_type="application/json")
-        try:
-            QR_CODE_DATA = json_request['QR_CODE_DATA']
-        except:
-            return Response(json.dumps({"Message": "QR_CODE_DATA not present"}), status=400,
-                                content_type="application/json")
-        try:
-            c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
-        except:
-            return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=404,
+    try:
+        c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+    except:
+        return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=404,
+                content_type="application/json")
+    total_cost = c.latest_transaction_cost
+    return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
                     content_type="application/json")
-        total_cost = c.latest_transaction_cost
-        return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
-                        content_type="application/json")
 
 @app.route('/api/parking/transactions/')
 def show_all_parking_transactions():
+    check_auth()
     parking_objects = ParkingLot.objects.all()
     x = create_parking_dict(parking_objects)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
@@ -291,6 +254,7 @@ def show_all_parking_transactions():
 
 @app.route('/api/parking/<parking_lot_name>')
 def show_single_parking_transactions(parking_lot_name):
+    check_auth()
     parking_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
     x = create_single_parking_dict(parking_obj)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
@@ -298,6 +262,7 @@ def show_single_parking_transactions(parking_lot_name):
 
 @app.route('/api/parking/stats/<parking_lot_name>/')
 def show_parking_analysis(parking_lot_name):
+    check_auth()
     from_exit_time_stamp = request.args.get('from_exit_time_stamp')
     to_exit_time_stamp = request.args.get('to_exit_time_stamp')
     from_year, from_month, from_day = from_exit_time_stamp.split('-')
@@ -390,8 +355,12 @@ def create_single_parking_dict(parking_obj):
     d['transactions'] = parking_obj.transactions
     return d
 
-def check_auth(token):
-    if token == "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM":
-        return True
-    else:
-        return False
+def check_auth():
+    try:
+        token = request.headers.get('token')
+    except KeyError:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if token != "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM":
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
