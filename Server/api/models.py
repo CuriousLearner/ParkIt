@@ -13,6 +13,7 @@ VEHICLES = (
 
 
 class Cost(db.Document):
+    # pid = db.ReferenceField(, dbref=False)
     parking_lot_name = db.StringField()
     two_wheeler = db.IntField()
     four_wheeler = db.IntField()
@@ -32,7 +33,7 @@ class Cost(db.Document):
 
 class Transaction(db.Document):
     cost = db.ReferenceField(Cost, dbref=False)
-    parking_lot_name = db.StringField()
+    pid = db.IntField()
     QR_CODE_DATA = db.StringField()
     total_cost = db.IntField()
     entry_time_stamp = db.DateTimeField()
@@ -47,11 +48,12 @@ class Transaction(db.Document):
                 'total_cost': self.total_cost,
                 'entry_time_stamp': self.entry_time_stamp,
                 'exit_time_stamp': self.exit_time_stamp,
-                'parking_lot_name': self.parking_lot_name
+                'pid': self.pid
                 }
 
 
 class ParkingLot(db.Document):
+    pid = db.IntField(unique=True)
     parking_lot_name = db.StringField(max_length=100)
     cost = db.ReferenceField(Cost, dbref=False)
     two_wheeler_capacity = db.IntField()
@@ -67,9 +69,18 @@ class ParkingLot(db.Document):
 
     def get_dict(self):
         return {
+                'pid' : self.pid,
                 'parking_lot_name': self.parking_lot_name,
                 'transactions': self.transactions
                 }
+
+    def save(self, *args, **kwargs):
+        if self.pid == None:
+            try:
+                self.pid = self.__class__.objects.order_by('-pid')[0].pid + 1
+            except IndexError:
+                self.pid = ParkingLot.objects.count() + 1
+        super(ParkingLot, self).save(*args, **kwargs)
 
 
 class Vehicle(db.Document):

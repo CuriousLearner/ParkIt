@@ -14,7 +14,7 @@ class CostView(ModelView):
     column_list = ('parking_lot_name', 'two_wheeler', 'four_wheeler', 'heavy_vehicle')
     decorators = [login_required]
 
-    form_widget_args = {'parking_lot_name': {'disabled': True}}
+    # form_widget_args = {'parking_lot_name': {'disabled': True}}
 
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
@@ -68,12 +68,18 @@ class ParkingLotView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('parking_lot_name', 'two_wheeler_capacity','four_wheeler_capacity',
+    column_list = ('pid', 'parking_lot_name', 'two_wheeler_capacity','four_wheeler_capacity',
                     'heavy_vehicle_capacity','current_two_wheeler','current_four_wheeler',
                     'current_heavy_vehicle')
     decorators = [login_required]
 
     column_filters = ('parking_lot_name',)
+
+    form_widget_args = {'pid': {'disabled': True},
+                        'current_two_wheeler': {'disabled': True},
+                        'current_four_wheeler': {'disabled': True},
+                        'current_heavy_vehicle': {'disabled': True}
+                        }
 
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")

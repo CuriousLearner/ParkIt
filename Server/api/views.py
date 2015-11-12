@@ -116,11 +116,11 @@ def get_customer_from_qr_and_enter_parking():
                         content_type="application/json")
         json_request = json.loads(request.data)
         try:
-            parking_lot_name = json_request['parking_lot_name']
+            pid = json_request['pid']
             QR_CODE_DATA = json_request['QR_CODE_DATA']
             vehicle_type = json_request['vehicle_type']
         except:
-            return Response(json.dumps({"Message": "parking_lot_name or QR_CODE_DATA or vehicle_type not present"}), status=400,
+            return Response(json.dumps({"Message": "pid or QR_CODE_DATA or vehicle_type not present"}), status=400,
                                 content_type="application/json")
         # Check if customer is there
         try:
@@ -142,23 +142,23 @@ def get_customer_from_qr_and_enter_parking():
         except:
             pass # No Transactions yet for this user
         x = create_single_customer_dict(SingleCustomer)
-        ParkingLot_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
+        ParkingLot_obj = ParkingLot.objects.get(pid=pid)
         if vehicle_type == 'two_wheeler':
-            if ParkingLot_obj.current_two_wheeler == ParkingLot_obj.two_wheeler_capacity - 1:
+            if ParkingLot_obj.current_two_wheeler <= ParkingLot_obj.two_wheeler_capacity - 1:
                 ParkingLot_obj.current_two_wheeler += 1
             else:
                 return Response(json.dumps({"Message": "Parking Full for two_wheeler"}, cls=PythonJSONEncoder), status=409,
                             content_type="application/json")
 
         elif vehicle_type == 'four_wheeler':
-            if ParkingLot_obj.current_four_wheeler == ParkingLot_obj.four_wheeler_capacity - 1:
+            if ParkingLot_obj.current_four_wheeler <= ParkingLot_obj.four_wheeler_capacity - 1:
                 ParkingLot_obj.current_four_wheeler += 1
             else:
                 return Response(json.dumps({"Message": "Parking Full for four_wheeler"}, cls=PythonJSONEncoder), status=409,
                             content_type="application/json")
 
         elif vehicle_type == 'heavy_vehicles':
-            if ParkingLot_obj.current_heavy_vehicles == ParkingLot_obj.heavy_vehicles_capacity - 1:
+            if ParkingLot_obj.current_heavy_vehicles <= ParkingLot_obj.heavy_vehicles_capacity - 1:
                 ParkingLot_obj.current_heavy_vehicles += 1
             else:
                 return Response(json.dumps({"Message": "Parking Full for heavy_vehicles"}, cls=PythonJSONEncoder), status=409,
@@ -170,7 +170,7 @@ def get_customer_from_qr_and_enter_parking():
         t.QR_CODE_DATA = QR_CODE_DATA
         t.entry_time_stamp = datetime.now()
         t.cost = ParkingLot_obj.cost
-        t.parking_lot_name = ParkingLot_obj.parking_lot_name
+        t.pid = ParkingLot_obj.pid
         t.save()
 
         return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
@@ -192,9 +192,9 @@ def make_transaction_on_exit():
         try:
             QR_CODE_DATA = json_request['QR_CODE_DATA']
             vehicle_type = json_request['vehicle_type']
-            parking_lot_name = json_request['parking_lot_name']
+            pid = json_request['pid']
         except:
-            return Response(json.dumps({"Message": "QR_CODE_DATA or vehicle_type or parking_lot_name not present"}), status=400,
+            return Response(json.dumps({"Message": "QR_CODE_DATA or vehicle_type or pid not present"}), status=400,
                                 content_type="application/json")
         try:
             c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
@@ -209,7 +209,8 @@ def make_transaction_on_exit():
             return Response(json.dumps({"Message": "No active transaction found"}, cls=PythonJSONEncoder), status=404,
                     content_type="application/json")
 
-        ParkingLot_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
+        ParkingLot_obj = ParkingLot.objects.get(pid=pid)
+        parking_lot_name = ParkingLot_obj.parking_lot_name
         cost_obj = Cost.objects.get(parking_lot_name=parking_lot_name)
         if not transaction.exit_time_stamp:
             if parking_lot_name != ParkingLot_obj['parking_lot_name']:
@@ -306,8 +307,8 @@ def show_single_parking_transactions(parking_lot_name):
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
-@app.route('/api/parking/stats/<parking_lot_name>/')
-def show_parking_analysis(parking_lot_name):
+@app.route('/api/parking/stats/<int:pid>/')
+def show_parking_analysis(pid):
     token = request.headers.get('token')
     if not token:
         return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
@@ -321,7 +322,8 @@ def show_parking_analysis(parking_lot_name):
     to_year, to_month, to_day = to_exit_time_stamp.split('-')
     from_date = datetime(int(from_year), int(from_month), int(from_day))
     to_date = datetime(int(to_year), int(to_month), int(to_day))
-    transactions = Transaction.objects.filter(parking_lot_name=parking_lot_name, exit_time_stamp__gte=from_date, exit_time_stamp__lte=to_date)
+    print(from_date, to_date)
+    transactions = Transaction.objects.filter(pid=pid, exit_time_stamp__gte=from_date, exit_time_stamp__lte=to_date)
     total_cost = 0
     no_of_transactions = len(transactions)
     for transaction in transactions:
