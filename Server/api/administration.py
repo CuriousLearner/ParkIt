@@ -7,36 +7,36 @@ from wtforms.validators import required, ValidationError
 from datetime import datetime
 
 
-# class VehicleEmbeddedView(EmbeddedForm):
-#     form_column = (vid,)
-#     form_widget_args = {'vid': {'disabled': True}}
-
-
-# class TrasactionEmbeddedView(EmbeddedForm):
-#     form_widget_args = {''}
-
-class TransactionView(ModelView):
-    can_create = False
+class CostView(ModelView):
+    can_create = True
     can_delete = True
-    can_edit = False
-    column_list = ('QR_CODE_DATA', 'cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
+    can_edit = True
+    column_list = ('parking_lot_name', 'two_wheeler', 'four_wheeler', 'heavy_vehicle')
     decorators = [login_required]
 
-    # form_widget_args = {'cost': {'disabled': True}, 
-    #                     'total_cost': {'disabled': True}, 
-    #                     'active': {'disabled': True},
-    #                     'entry_time_stamp': {'disabled': True},
-    #                     'exit_time_stamp': {'disabled': True}}
+    form_widget_args = {'parking_lot_name': {'disabled': True}}
 
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
+
+
+class TransactionView(ModelView):
+    can_create = True
+    can_delete = True
+    can_edit = True
+    column_list = ('QR_CODE_DATA', 'parking_lot_name', 'cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
+    decorators = [login_required]
+
+    def is_accessible(self):
+        return current_user.has_role("admin") or current_user.has_role("super_admin")
+
 
 class CustomerView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
     column_list = ('cid', 'first_name', 'last_name', 'contact_no', 
-                    'address', 'created_on', 'modified_on', 'QR_CODE_DATA')
+                    'address', 'created_on', 'modified_on', 'QR_CODE_DATA', 'latest_transaction_cost')
     decorators = [login_required]
     form_widget_args = {'cid': {'disabled': True}, 
                         'created_on': {'disabled': True}, 
@@ -45,16 +45,6 @@ class CustomerView(ModelView):
                         'latest_transaction_cost': {'disabled': True},
                         'driving_licence_link': {'disabled': True}}
     column_filters = ('cid', 'driving_licence_link', 'first_name', 'last_name')
-    # form_subdocuments = {
-    #                 'vehicles': {
-    #                     'form_subdocuments': {
-    #                         None: {
-    #                             'form_columns': ('vehicle_type',),
-    #                             # 'form_widget_args': {'vid': {'disabled': True}}
-    #                         }
-    #                     }
-    #                 }
-    #             }
 
     def is_accessible(self):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
@@ -64,7 +54,7 @@ class VehicleView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('vid', 'vehicle_type', 'vehicle_number')
+    column_list = ('vid', 'vehicle_type', 'vehicle_number', 'vehicle_rc_link')
     decorators = [login_required]
     form_widget_args = {'vid': {'disabled': True}}
 
@@ -74,11 +64,13 @@ class VehicleView(ModelView):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
 
-class CostView(ModelView):
+class ParkingLotView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('parking_lot_name', 'two_wheeler', 'four_wheeler', 'heavy_vehicle')
+    column_list = ('parking_lot_name', 'two_wheeler_capacity','four_wheeler_capacity',
+                    'heavy_vehicle_capacity','current_two_wheeler','current_four_wheeler',
+                    'current_heavy_vehicle')
     decorators = [login_required]
 
     column_filters = ('parking_lot_name',)
@@ -109,7 +101,8 @@ class RoleView(ModelView):
 
 api.admin.add_view(CustomerView(api.models.Customer))
 api.admin.add_view(VehicleView(api.models.Vehicle))
-api.admin.add_view(CostView(api.models.Cost))
+api.admin.add_view(ParkingLotView(api.models.ParkingLot))
 api.admin.add_view(TransactionView(api.models.Transaction))
+api.admin.add_view(CostView(api.models.Cost))
 api.admin.add_view(UserView(api.models.User))
 api.admin.add_view(RoleView(api.models.Role))
