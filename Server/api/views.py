@@ -18,7 +18,13 @@ def api_admin_panel_home():
 @app.route('/api/customer/register/', methods=['GET', 'POST'])
 def register_customer():
     if request.method == 'POST':
-        check_auth()
+        token = request.headers.get('token')
+        if not token:
+            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                            content_type="application/json")
+        if not check_auth(token):
+            return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                        content_type="application/json")
         json_request = json.loads(request.data)
         c = Customer()
         try:
@@ -58,7 +64,13 @@ def get_customer():
     '''
     returns all the events with GET request
     '''
-    check_auth()
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     allCustomer = Customer.objects.all()
     result = create_dict(allCustomer)
     return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
@@ -71,7 +83,13 @@ def get_single_customer(cid):
     '''
     returns all the events with GET request
     '''
-    check_auth()
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     try:
         SingleCustomer = Customer.objects.get(cid=cid)
     except:
@@ -89,7 +107,13 @@ def get_customer_from_qr_and_enter_parking():
     returns all the events with GET request
     '''
     if request.method == 'POST':
-        check_auth()
+        token = request.headers.get('token')
+        if not token:
+            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                            content_type="application/json")
+        if not check_auth(token):
+            return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                        content_type="application/json")
         json_request = json.loads(request.data)
         try:
             parking_lot_name = json_request['parking_lot_name']
@@ -157,7 +181,13 @@ def get_customer_from_qr_and_enter_parking():
 @app.route('/api/customer/exit/', methods=['GET', 'POST'])
 def make_transaction_on_exit():
     if request.method == 'POST':
-        check_auth()
+        token = request.headers.get('token')
+        if not token:
+            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                            content_type="application/json")
+        if not check_auth(token):
+            return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                        content_type="application/json")
         json_request = json.loads(request.data)
         try:
             QR_CODE_DATA = json_request['QR_CODE_DATA']
@@ -181,9 +211,7 @@ def make_transaction_on_exit():
 
         ParkingLot_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
         cost_obj = Cost.objects.get(parking_lot_name=parking_lot_name)
-        print "1"
         if not transaction.exit_time_stamp:
-            print "YES"
             if parking_lot_name != ParkingLot_obj['parking_lot_name']:
                 return Response(json.dumps({"Message": "You entered from somewhere else"}, cls=PythonJSONEncoder), status=409,
                     content_type="application/json")
@@ -201,7 +229,7 @@ def make_transaction_on_exit():
                 transaction.total_cost = cost_obj.four_wheeler * total_time
             elif vehicle_type == 'heavy_vehicles':
                 transaction.total_cost = cost_obj.heavy_vehicles * total_time
-            print(transaction.total_cost)
+            # print(transaction.total_cost)
             transaction.active = False
             c.latest_transaction_cost = transaction.total_cost
             transaction.save()
@@ -229,7 +257,13 @@ def make_transaction_on_exit():
 @app.route('/api/customer/transaction/cost')
 @app.route('/api/customer/transaction/cost/')
 def get_latest_transaction_cost():
-    check_auth()
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     try:
         QR_CODE_DATA = request.args.get('QR_CODE_DATA')
     except:
@@ -246,7 +280,13 @@ def get_latest_transaction_cost():
 
 @app.route('/api/parking/transactions/')
 def show_all_parking_transactions():
-    check_auth()
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     parking_objects = ParkingLot.objects.all()
     x = create_parking_dict(parking_objects)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
@@ -254,7 +294,13 @@ def show_all_parking_transactions():
 
 @app.route('/api/parking/<parking_lot_name>')
 def show_single_parking_transactions(parking_lot_name):
-    check_auth()
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     parking_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
     x = create_single_parking_dict(parking_obj)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
@@ -262,7 +308,13 @@ def show_single_parking_transactions(parking_lot_name):
 
 @app.route('/api/parking/stats/<parking_lot_name>/')
 def show_parking_analysis(parking_lot_name):
-    check_auth()
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     from_exit_time_stamp = request.args.get('from_exit_time_stamp')
     to_exit_time_stamp = request.args.get('to_exit_time_stamp')
     from_year, from_month, from_day = from_exit_time_stamp.split('-')
@@ -355,12 +407,7 @@ def create_single_parking_dict(parking_obj):
     d['transactions'] = parking_obj.transactions
     return d
 
-def check_auth():
-    try:
-        token = request.headers.get('token')
-    except KeyError:
-        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
-                        content_type="application/json")
-    if token != "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM":
-        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
-                    content_type="application/json")
+def check_auth(token):
+    if token == "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM":
+        return True
+    return False
