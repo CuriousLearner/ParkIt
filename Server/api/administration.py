@@ -24,7 +24,8 @@ class TransactionView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('QR_CODE_DATA', 'parking_lot_name', 'cost', 'total_cost', 'active', 'entry_time_stamp', 'exit_time_stamp')
+    column_list = ('QR_CODE_DATA', 'pid', 'cost', 'total_cost',
+                    'active', 'entry_time_stamp', 'exit_time_stamp')
     decorators = [login_required]
 
     def is_accessible(self):
@@ -35,8 +36,9 @@ class CustomerView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('cid', 'first_name', 'last_name', 'contact_no', 
-                    'address', 'created_on', 'modified_on', 'QR_CODE_DATA', 'latest_transaction_cost')
+    column_list = ('cid', 'first_name', 'last_name', 'contact_no',
+                    'address', 'created_on', 'modified_on',
+                    'QR_CODE_DATA', 'latest_transaction_cost')
     decorators = [login_required]
     form_widget_args = {'cid': {'disabled': True}, 
                         'created_on': {'disabled': True}, 
@@ -68,8 +70,9 @@ class ParkingLotView(ModelView):
     can_create = True
     can_delete = True
     can_edit = True
-    column_list = ('pid', 'parking_lot_name', 'two_wheeler_capacity','four_wheeler_capacity',
-                    'heavy_vehicle_capacity','current_two_wheeler','current_four_wheeler',
+    column_list = ('pid', 'parking_lot_name', 'two_wheeler_capacity',
+                    'four_wheeler_capacity', 'heavy_vehicle_capacity',
+                    'current_two_wheeler','current_four_wheeler',
                     'current_heavy_vehicle')
     decorators = [login_required]
 

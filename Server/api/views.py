@@ -137,7 +137,8 @@ def get_customer_from_qr_and_enter_parking():
                     raise Error
             except:
                 # 409 for conflict
-                return Response(json.dumps({"Message": "Already an active transaction found for current user"}, cls=PythonJSONEncoder), status=409,
+                return Response(json.dumps({"Message": "Already an active transaction found for current user"}, cls=PythonJSONEncoder), 
+                            status=409,
                             content_type="application/json")
         except:
             pass # No Transactions yet for this user
@@ -279,6 +280,7 @@ def get_latest_transaction_cost():
     return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
                     content_type="application/json")
 
+@app.route('/api/parking/transactions')
 @app.route('/api/parking/transactions/')
 def show_all_parking_transactions():
     token = request.headers.get('token')
@@ -289,12 +291,14 @@ def show_all_parking_transactions():
         return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
                     content_type="application/json")
     parking_objects = ParkingLot.objects.all()
-    x = create_parking_dict(parking_objects)
+    # print(parking_objects)
+    x = create_parking_transactions_dict(parking_objects)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
-@app.route('/api/parking/<parking_lot_name>')
-def show_single_parking_transactions(parking_lot_name):
+@app.route('/api/parking/<int:pid>/transactions')
+@app.route('/api/parking/<int:pid>/transactions/')
+def show_single_parking_transactions(pid):
     token = request.headers.get('token')
     if not token:
         return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
@@ -302,11 +306,12 @@ def show_single_parking_transactions(parking_lot_name):
     if not check_auth(token):
         return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
                     content_type="application/json")
-    parking_obj = ParkingLot.objects.get(parking_lot_name=parking_lot_name)
+    parking_obj = ParkingLot.objects.get(pid=pid)
     x = create_single_parking_dict(parking_obj)
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
+@app.route('/api/parking/stats/<int:pid>')
 @app.route('/api/parking/stats/<int:pid>/')
 def show_parking_analysis(pid):
     token = request.headers.get('token')
@@ -329,6 +334,21 @@ def show_parking_analysis(pid):
     for transaction in transactions:
         total_cost += transaction.total_cost
     return Response(json.dumps({"total_cost": total_cost, "no_of_transactions": no_of_transactions}), status=200,
+                        content_type="application/json")
+
+@app.route('/api/parking')
+@app.route('/api/parking/')
+def parking_lot_details():
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
+    parkingLotObjects = ParkingLot.objects.all()
+    x = create_parking_dict(parkingLotObjects)
+    return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
 @app.errorhandler(404)
@@ -394,17 +414,28 @@ def create_single_customer_dict(SingleCustomer):
     d['transactions'] = SingleCustomer.transactions
     return d
 
-def create_parking_dict(parkingObjects):
-    d = {}
+def create_parking_transactions_dict(parkingObjects):
     result = []
     for item in parkingObjects:
+        d = {}
+        d['pid'] = item.pid
         d['parking_lot_name'] = item.parking_lot_name
         d['transactions'] = item.transactions
         result.append(d)
     return result
 
+def create_parking_dict(parkingObjects):
+    result = []
+    for item in parkingObjects:
+        d = {}
+        d['pid'] = item.pid
+        d['parking_lot_name'] = item.parking_lot_name
+        result.append(d)
+    return result
+
 def create_single_parking_dict(parking_obj):
     d = {}
+    d['pid'] = parking_obj.pid
     d['parking_lot_name'] = parking_obj.parking_lot_name
     d['transactions'] = parking_obj.transactions
     return d

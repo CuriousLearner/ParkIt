@@ -4,6 +4,7 @@ from flask_security import Security, UserMixin, \
 from datetime import datetime
 from flask.ext.security.utils import encrypt_password
 import hashlib
+from mongoengine import NULLIFY
 
 VEHICLES = (
     'two_wheeler',
@@ -20,7 +21,8 @@ class Cost(db.Document):
     heavy_vehicle = db.IntField()
 
     def __str__(self):
-        return "COST FOR two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(self.two_wheeler, self.four_wheeler, self.heavy_vehicle)
+        return "COST FOR two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(
+                self.two_wheeler, self.four_wheeler, self.heavy_vehicle)
 
     def get_dict(self):
         return {
@@ -41,7 +43,8 @@ class Transaction(db.Document):
     active = db.BooleanField(default=False)
 
     def __str__(self):
-        return "total_cost: {}, cost: {}, entry: {}, exit: {}".format(self.total_cost, self.cost, self.entry_time_stamp, self.exit_time_stamp)
+        return "total_cost: {}, cost: {}, entry: {}, exit: {}".format(
+            self.total_cost, self.cost, self.entry_time_stamp, self.exit_time_stamp)
 
     def get_dict(self):
         return {
@@ -62,10 +65,11 @@ class ParkingLot(db.Document):
     current_two_wheeler = db.IntField(default=0)
     current_four_wheeler = db.IntField(default=0)
     current_heavy_vehicle = db.IntField(default=0)
-    transactions = db.ListField(db.ReferenceField(Transaction, dbref=False))
+    transactions = db.ListField(db.ReferenceField(Transaction, dbref=False, reverse_delete_rule=NULLIFY))
 
     def __str__(self):
-        return "Parking: {} two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(self.parking_lot_name, self.cost.two_wheeler, self.cost.four_wheeler, self.cost.heavy_vehicle)
+        return "Parking: {} two_wheeler :{}, four_wheeler: {}, heavy_vehicle: {}".format(
+                self.parking_lot_name, self.cost.two_wheeler, self.cost.four_wheeler, self.cost.heavy_vehicle)
 
     def get_dict(self):
         return {
@@ -123,8 +127,8 @@ class Customer(db.Document):
     latest_transaction_cost = db.IntField()
     driving_licence_link = db.URLField()
     QR_CODE_DATA = db.StringField(max_length=200)
-    vehicles = db.ListField(db.ReferenceField(Vehicle, dbref=False), default=[])
-    transactions = db.ListField(db.ReferenceField(Transaction, dbref=False))
+    vehicles = db.ListField(db.ReferenceField(Vehicle, dbref=False, reverse_delete_rule=NULLIFY))
+    transactions = db.ListField(db.ReferenceField(Transaction, dbref=False, reverse_delete_rule=NULLIFY))
 
 
     def __unicode__(self):
