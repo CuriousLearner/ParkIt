@@ -1,14 +1,18 @@
 package com.parkit.parkit_entry_scanner.ui.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
+import com.google.zxing.integration.android.IntentResult;
+import com.parkit.parkit_entry_scanner.Constants;
 import com.parkit.parkit_entry_scanner.ParkItEntryScannerNavigationDrawer;
 import com.parkit.parkit_entry_scanner.R;
+import com.parkit.parkit_entry_scanner.Utils;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -25,6 +29,25 @@ public class MainActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+
+        // check if configured
+        SharedPreferences parkItEntryScannerConfig = this.getSharedPreferences(
+                Constants.SHARED_PREFERENCES_KEY, 0);
+
+        String parkingLotIdConfig =
+                parkItEntryScannerConfig.getString(Constants.CONFIG_KEY_PARKING_LOT_ID, "");
+
+        if(!parkingLotIdConfig.equals("")) {
+            // configured scanner
+
+            // open navDrawer
+            Intent openNavDrawerIntent = new Intent(this, ParkItEntryScannerNavigationDrawer.class);
+            startActivity(openNavDrawerIntent);
+
+            Utils.showShortToast("Welcome !!!", this.getApplicationContext());
+        }
+
 
     }
 
@@ -53,13 +76,14 @@ public class MainActivity extends ActionBarActivity {
 
     // OnClicks
     @OnClick(R.id.btn_check_login)
-    public void checkLogin() {
+    public void configureScanner() {
 
-        // every one is logged in
+        // open configuration login activity
+        Utils.showShortToast("Please enter the pass key to configure the scanner ...", this.getApplicationContext());
+        Intent configureScannerIntent = new Intent(this, ConfigurationLogin.class);
+        startActivity(configureScannerIntent);
 
-        // open navDrawer
-        Intent openNavDrawerIntent = new Intent(this, ParkItEntryScannerNavigationDrawer.class);
-        startActivity(openNavDrawerIntent);
+
     }
 
 }

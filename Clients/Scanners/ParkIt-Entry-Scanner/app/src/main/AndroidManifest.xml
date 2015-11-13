@@ -19,7 +19,15 @@
         <activity
             android:name=".ParkItEntryScannerNavigationDrawer"
             android:label="@string/label_parkit_nav_drawer"
-            android:theme="@style/ParkItNavigationDrawerTheme">
+            android:theme="@style/ParkItNavigationDrawerTheme" >
+        </activity>
+        <activity
+            android:name=".ui.activity.ScannerConfigurationActivity"
+            android:label="@string/title_activity_scanner_configuration" >
+        </activity>
+        <activity
+            android:name=".ui.activity.ConfigurationLogin"
+            android:label="@string/title_activity_configuration_login" >
         </activity>
     </application>
 
