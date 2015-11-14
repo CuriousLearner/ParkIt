@@ -24,7 +24,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/edit_parking_lot_id"
-            android:inputType="text"
+            android:inputType="number"
             android:hint="@string/abc_search_hint"
             />
     </LinearLayout>

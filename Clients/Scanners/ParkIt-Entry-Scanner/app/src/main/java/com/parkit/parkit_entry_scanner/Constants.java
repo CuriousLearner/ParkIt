@@ -10,6 +10,8 @@ public interface Constants {
     public static final String CONFIG_KEY_PARKING_LOT_ID = "parking_lot_id";
     public static final String SHARED_PREFERENCES_KEY = "parkit-entry";
     public static final String CONFIG_PASS_KEY = "321@alphaOmega";
+    public static final String PARKIT_AUTH_TOKEN =
+            "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM";
 
 
 
