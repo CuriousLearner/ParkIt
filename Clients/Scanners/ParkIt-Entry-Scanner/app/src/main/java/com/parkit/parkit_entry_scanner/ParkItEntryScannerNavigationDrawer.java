@@ -79,7 +79,7 @@ public class ParkItEntryScannerNavigationDrawer extends MaterialNavigationDrawer
 
 
             // Inform fragment
-            QRCodeScannerFragment.onQRCodeScanned(scanResult);
+            QRCodeScannerFragment.getCurrentFragmentInstance().onQRCodeScanned(scanResult);
 
 
         } else {

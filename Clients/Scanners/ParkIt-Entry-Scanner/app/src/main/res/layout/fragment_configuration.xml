@@ -1,7 +1,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
     tools:context="com.parkit.parkit_entry_scanner.ui.fragment.ConfigurationFragment">
+
+    <Button
+        android:layout_marginTop="200dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btn_clear_config"
+        android:text="@string/label_clear_config_btn"
+        />
 
 
 </FrameLayout>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.parkit.parkit_entry_scanner" >
+    package="com.parkit.parkit_exit_scanner" >
 
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -20,17 +20,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ParkItEntryScannerNavigationDrawer"
-            android:label="@string/label_parkit_nav_drawer"
-            android:theme="@style/ParkItNavigationDrawerTheme" >
+            android:name=".ParkItExitScannerNavigationDrawer"
+            android:theme="@style/ParkItExitScannerNavigationDrawerTheme" />
+        <activity
+            android:name=".ui.activity.ConfigurationLoginActivity"
+            android:label="@string/title_activity_configuration_login" >
         </activity>
         <activity
             android:name=".ui.activity.ScannerConfigurationActivity"
             android:label="@string/title_activity_scanner_configuration" >
-        </activity>
-        <activity
-            android:name=".ui.activity.ConfigurationLogin"
-            android:label="@string/title_activity_configuration_login" >
         </activity>
     </application>
 
