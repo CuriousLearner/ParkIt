@@ -105,7 +105,7 @@ public class ScannerConfigurationActivity extends ActionBarActivity {
         }
 
         String willSaveLog = "Parking Lot ID : "
-                + Integer.parseInt(parkingLotIdEdit.getText().toString())
+                + parkingLotIdEdit.getText().toString()
                 + "\nVehicle Type : " + vehicleType;
 
         Log.d(Constants.LOG_TAG, "Will save configuration : \n" + willSaveLog);

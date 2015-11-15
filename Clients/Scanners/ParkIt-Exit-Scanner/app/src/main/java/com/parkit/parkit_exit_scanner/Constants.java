@@ -10,6 +10,8 @@ public class Constants {
     public static final String SHARED_PREFS_KEY = "parkit-exit";
     public static final String CONFIG_KEY_PARKING_LOT_ID = "parking_lot_id";
     public static final String CONFIG_KEY_VEHICLE_TYPE = "vehicle_type";
+    public static final String PARKIT_API_AUTH_TOKEN
+            = "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM";
 
 
 }

@@ -11,6 +11,7 @@ import com.parkit.parkit_exit_scanner.Constants;
 import com.parkit.parkit_exit_scanner.ParkItExitScannerNavigationDrawer;
 import com.parkit.parkit_exit_scanner.R;
 import com.parkit.parkit_exit_scanner.Utils;
+import com.parkit.parkit_exit_scanner.rest.RestClient;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -24,6 +25,9 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+
+        // initialize rest client
+        RestClient restClient = new RestClient();
 
         SharedPreferences scannerConfiguration =
                 getSharedPreferences(Constants.SHARED_PREFS_KEY, 0);
