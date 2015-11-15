@@ -9,6 +9,8 @@ from os import environ
 import requests
 from flask.ext.security.utils import encrypt_password
 from math import ceil
+import urllib2
+from json import loads
 
 @app.route('/')
 def api_admin_panel_home():
@@ -56,6 +58,9 @@ def register_customer():
             v.save()
             c.vehicles.append(v)
         c.save()
+        ewallet_reg_url = "http://0.0.0.0:8000/login?x=1&name=" + str(c.cid) + "&password=" + str(c.QR_CODE_DATA)
+        content = json.loads(urllib2.urlopen(ewallet_reg_url).read())
+        print(content)
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA}), status=200,
                             content_type="application/json")
 
@@ -165,7 +170,15 @@ def get_customer_from_qr_and_enter_parking():
                 return Response(json.dumps({"Message": "Parking Full for heavy_vehicles"}, cls=PythonJSONEncoder), status=409,
                             content_type="application/json")
         ParkingLot_obj.save()
-        # There is space in parking, so create transaction for current user
+        # Check for balance in e-wallet
+        ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(SingleCustomer.cid)
+        content = json.loads(urllib2.urlopen(ewallet_profile_url).read())
+        # Now check balance
+        if content['cash'] < 40:
+            return Response(json.dumps({"Message": "Balance is low in your wallet. Please recharge first"}), status=200,
+                            content_type="application/json")
+        # There is space in parking anc enough balance in wallet,
+        # so create transaction for current user
         t = Transaction()
         t.active = True
         t.QR_CODE_DATA = QR_CODE_DATA
@@ -173,7 +186,6 @@ def get_customer_from_qr_and_enter_parking():
         t.cost = ParkingLot_obj.cost
         t.pid = ParkingLot_obj.pid
         t.save()
-
         return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
@@ -252,6 +264,23 @@ def make_transaction_on_exit():
             c.save()
             ParkingLot_obj.transactions.append(transaction)
             ParkingLot_obj.save()
+            # Deduct balance from wallet
+            # First check if there is enough balance, if not then first user would recharge
+            # and then gates would open after successful deduction
+            # Check for balance in e-wallet
+            ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(c.cid)
+            ewallet = json.loads(urllib2.urlopen(ewallet_profile_url).read())
+            # if ewallet['cash'] < transaction.total_cost:
+
+            # Login into wallet
+            ewallet_login_url = "http://0.0.0.0:8000/login?x=2&name=" + str(c.cid) + "&password=" + str(c.QR_CODE_DATA)
+            login_content = json.loads(urllib2.urlopen(ewallet_login_url).read())
+            # if successful login then deduct balance
+            ewallet_deduct_balance_url = "http://0.0.0.0:8000/transaction?x=1&name=" + str(c.cid) + "&amount=" + str(int(transaction.total_cost))
+            dedution_content = json.loads(urllib2.urlopen(ewallet_deduct_balance_url).read())
+            # Now logout from e-wallet
+            ewallet_logout_url = "http://0.0.0.0:8000/logout?name=" + str(c.cid)
+            logout_content = json.loads(urllib2.urlopen(ewallet_logout_url).read())
         return Response(json.dumps({"cost": transaction.total_cost}, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
