@@ -376,6 +376,24 @@ def parking_lot_details():
     return Response(json.dumps(x, cls=PythonJSONEncoder), status=200,
                         content_type="application/json")
 
+@app.route('/api/customer/balance')
+@app.route('/api/customer/balance/')
+def check_customer_balance():
+    try:
+        QR_CODE_DATA = request.args.get('QR_CODE_DATA')
+    except:
+        return Response(json.dumps({"Message": "QR_CODE_DATA not present"}), status=400,
+                            content_type="application/json")
+    try:
+        customer = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+    except:
+        return Response(json.dumps({"Message": "Customer not found"}), status=404,
+                    content_type="application/json")
+    ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(customer.cid)
+    content = json.loads(urllib2.urlopen(ewallet_profile_url).read())
+    return Response(json.dumps({"balance": content['cash']}), status=200,
+                        content_type="application/json")
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({"Error": "Not found"}), 404)
