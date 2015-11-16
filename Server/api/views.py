@@ -133,20 +133,20 @@ def get_customer_from_qr_and_enter_parking():
         except:
             return Response(json.dumps({"Message": "Customer not found"}, cls=PythonJSONEncoder), status=404,
                         content_type="application/json")
+        # try:
+        #     # Check if any transaction is there for this user
+        #     Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA)
         try:
-            # Check if any transaction is there for this user
-            Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA)
-            try:
-                # Check for active transaction
-                if Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA, active=True).count() == 1:
-                    raise Error
-            except:
-                # 409 for conflict
-                return Response(json.dumps({"Message": "Already an active transaction found for current user"}, cls=PythonJSONEncoder), 
-                            status=409,
-                            content_type="application/json")
+            # Check for active transaction
+            if Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA, active=True).count() >= 1:
+                raise Error
         except:
-            pass # No Transactions yet for this user
+            # 409 for conflict
+            return Response(json.dumps({"Message": "Already an active transaction found for current user"}, cls=PythonJSONEncoder), 
+                        status=409,
+                        content_type="application/json")
+        # except:
+        #     pass # No Transactions yet for this user
         x = create_single_customer_dict(SingleCustomer)
         ParkingLot_obj = ParkingLot.objects.get(pid=pid)
         if vehicle_type == 'two_wheeler':
