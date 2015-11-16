@@ -133,9 +133,6 @@ def get_customer_from_qr_and_enter_parking():
         except:
             return Response(json.dumps({"Message": "Customer not found"}, cls=PythonJSONEncoder), status=404,
                         content_type="application/json")
-        # try:
-        #     # Check if any transaction is there for this user
-        #     Transaction.objects.get(QR_CODE_DATA=QR_CODE_DATA)
         try:
             # Check for active transaction
             if Transaction.objects.filter(QR_CODE_DATA=QR_CODE_DATA, active=True).count() >= 1:
@@ -145,8 +142,6 @@ def get_customer_from_qr_and_enter_parking():
             return Response(json.dumps({"Message": "Already an active transaction found for current user"}, cls=PythonJSONEncoder), 
                         status=409,
                         content_type="application/json")
-        # except:
-        #     pass # No Transactions yet for this user
         x = create_single_customer_dict(SingleCustomer)
         ParkingLot_obj = ParkingLot.objects.get(pid=pid)
         if vehicle_type == 'two_wheeler':
@@ -174,8 +169,8 @@ def get_customer_from_qr_and_enter_parking():
         ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(SingleCustomer.cid)
         content = json.loads(urllib2.urlopen(ewallet_profile_url).read())
         # Now check balance
-        if content['cash'] < 40:
-            return Response(json.dumps({"Message": "Balance is low in your wallet. Please recharge first"}), status=200,
+        if content['cash'] < 40: # 402 - Payment Required
+            return Response(json.dumps({"Message": "Balance is low in your wallet. Please recharge first"}), status=402,
                             content_type="application/json")
         # There is space in parking anc enough balance in wallet,
         # so create transaction for current user
@@ -267,11 +262,6 @@ def make_transaction_on_exit():
             # Deduct balance from wallet
             # First check if there is enough balance, if not then first user would recharge
             # and then gates would open after successful deduction
-            # Check for balance in e-wallet
-            ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(c.cid)
-            ewallet = json.loads(urllib2.urlopen(ewallet_profile_url).read())
-            # if ewallet['cash'] < transaction.total_cost:
-
             # Login into wallet
             ewallet_login_url = "http://0.0.0.0:8000/login?x=2&name=" + str(c.cid) + "&password=" + str(c.QR_CODE_DATA)
             login_content = json.loads(urllib2.urlopen(ewallet_login_url).read())
@@ -281,7 +271,13 @@ def make_transaction_on_exit():
             # Now logout from e-wallet
             ewallet_logout_url = "http://0.0.0.0:8000/logout?name=" + str(c.cid)
             logout_content = json.loads(urllib2.urlopen(ewallet_logout_url).read())
-        return Response(json.dumps({"cost": transaction.total_cost}, cls=PythonJSONEncoder), status=200,
+            # Check for balance in e-wallet
+            ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(c.cid)
+            ewallet = json.loads(urllib2.urlopen(ewallet_profile_url).read())
+            if ewallet['cash'] < 0:
+                return Response(json.dumps({"cost": transaction.total_cost, "balance": ewallet['cash']}), status=402,
+                                content_type="application/json")
+        return Response(json.dumps({"cost": transaction.total_cost, "balance": ewallet['cash']}), status=200,
                         content_type="application/json")
 
 
