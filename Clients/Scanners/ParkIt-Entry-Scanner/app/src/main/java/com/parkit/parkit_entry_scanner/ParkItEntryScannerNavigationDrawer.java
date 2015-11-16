@@ -28,7 +28,7 @@ public class ParkItEntryScannerNavigationDrawer extends MaterialNavigationDrawer
 
 
         scannerSection = newSection(
-                "Scanner",
+                "Entry Scanner",
                 new IconDrawable(this, Iconify.IconValue.fa_barcode),
                 new QRCodeScannerFragment()
         );

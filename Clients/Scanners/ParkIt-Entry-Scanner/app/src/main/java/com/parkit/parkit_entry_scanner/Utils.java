@@ -16,4 +16,12 @@ public class Utils {
         ).show();
     }
 
+
+    public static void showLongToast(String message, Context ctx) {
+        Toast.makeText(
+                ctx,
+                message,
+                Toast.LENGTH_LONG
+        ).show();
+    }
 }
