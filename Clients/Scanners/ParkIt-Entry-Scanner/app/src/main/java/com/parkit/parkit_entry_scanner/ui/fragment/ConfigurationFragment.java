@@ -11,12 +11,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.parkit.parkit_entry_scanner.Constants;
 import com.parkit.parkit_entry_scanner.R;
 import com.parkit.parkit_entry_scanner.Utils;
 import com.parkit.parkit_entry_scanner.ui.activity.MainActivity;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
@@ -25,6 +27,13 @@ public class ConfigurationFragment extends Fragment {
 
     private View view;
 
+
+    @Bind(R.id.text_parking_lot_id)
+    TextView parkingLotIDText;
+
+    @Bind(R.id.text_vehicle_type)
+    TextView vehicleTypeText;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,10 +41,31 @@ public class ConfigurationFragment extends Fragment {
             //@TODO: form configuration fragment view
             view = inflater.inflate(R.layout.fragment_configuration, container, false);
             ButterKnife.bind(this, view);
+            showConfig();
         }
         return view;
     }
 
+
+
+    private void showConfig() {
+
+        SharedPreferences scannerConfig =
+                this.getActivity().getSharedPreferences(Constants.SHARED_PREFERENCES_KEY, 0);
+
+        String parkingLotID = scannerConfig
+                .getString(Constants.CONFIG_KEY_PARKING_LOT_ID, "not configured");
+        String vehicleType = scannerConfig
+                .getString(Constants.CONFIG_KEY_VEHICLE_TYPE, "not configured");
+
+        parkingLotIDText.setText(
+                "Parking Lot ID : " + parkingLotID
+        );
+
+        vehicleTypeText.setText(
+                "Vehicle Type : " + vehicleType
+        );
+    }
 
     @OnClick(R.id.btn_clear_config)
     public void clearScannerConfig() {
