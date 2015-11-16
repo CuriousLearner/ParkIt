@@ -60,7 +60,6 @@ def register_customer():
         c.save()
         ewallet_reg_url = "http://0.0.0.0:8000/login?x=1&name=" + str(c.cid) + "&password=" + str(c.QR_CODE_DATA)
         content = json.loads(urllib2.urlopen(ewallet_reg_url).read())
-        print(content)
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA}), status=200,
                             content_type="application/json")
 
@@ -207,7 +206,7 @@ def make_transaction_on_exit():
         try:
             c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
         except:
-            return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=404,
+            return Response(json.dumps({"Message": "Customer does not exist"}), status=404,
                     content_type="application/json")
 
         # Checking if there is any active transaction
@@ -299,7 +298,7 @@ def get_latest_transaction_cost():
     try:
         c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
     except:
-        return Response(json.dumps({"Message": "Customer does not exist"}, cls=PythonJSONEncoder), status=404,
+        return Response(json.dumps({"Message": "Customer does not exist"}), status=404,
                 content_type="application/json")
     total_cost = c.latest_transaction_cost
     return Response(json.dumps({"cost": total_cost}, cls=PythonJSONEncoder), status=200,
@@ -352,7 +351,7 @@ def show_parking_analysis(pid):
     to_year, to_month, to_day = to_exit_time_stamp.split('-')
     from_date = datetime(int(from_year), int(from_month), int(from_day))
     to_date = datetime(int(to_year), int(to_month), int(to_day))
-    print(from_date, to_date)
+    # print(from_date, to_date)
     transactions = Transaction.objects.filter(pid=pid, exit_time_stamp__gte=from_date, exit_time_stamp__lte=to_date)
     total_cost = 0
     no_of_transactions = len(transactions)
@@ -379,6 +378,13 @@ def parking_lot_details():
 @app.route('/api/customer/balance')
 @app.route('/api/customer/balance/')
 def check_customer_balance():
+    token = request.headers.get('token')
+    if not token:
+        return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                        content_type="application/json")
+    if not check_auth(token):
+        return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                    content_type="application/json")
     try:
         QR_CODE_DATA = request.args.get('QR_CODE_DATA')
     except:
@@ -393,6 +399,29 @@ def check_customer_balance():
     content = json.loads(urllib2.urlopen(ewallet_profile_url).read())
     return Response(json.dumps({"balance": content['cash']}), status=200,
                         content_type="application/json")
+
+@app.route('/api/customer/modify', methods=['GET', 'PUT'])
+@app.route('/api/customer/modify/', methods=['GET', 'PUT'])
+def modify_customer_details():
+    if request.method == 'PUT':
+        token = request.headers.get('token')
+        if not token:
+            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                            content_type="application/json")
+        if not check_auth(token):
+            return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                        content_type="application/json")
+        QR_CODE_DATA = request.headers.get('QR_CODE_DATA')
+        try:
+            c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        except:
+            return Response(json.dumps({"Message": "Customer does not exist"}), status=404,
+                    content_type="application/json")
+        modified_json, modified_vehicles = create_dict_for_update(request.json)
+        modified_json['vehicles'] = modified_vehicles
+        c.update(**modified_json)
+        return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA, "Message": "Modified Successfully."}), status=200,
+                            content_type="application/json")
 
 @app.errorhandler(404)
 def not_found(error):
@@ -482,6 +511,31 @@ def create_single_parking_dict(parking_obj):
     d['parking_lot_name'] = parking_obj.parking_lot_name
     d['transactions'] = parking_obj.transactions
     return d
+
+def create_dict_for_update(JSONDoc):
+    modified_vehicles = []
+    for k, v in JSONDoc.iteritems():
+        if k == 'vehicles':
+            # print(k, v)
+            # for vehicle, customer_vehicle in zip(v, CustomerObject.vehicles):
+            #     print("VEHICLE " + str(vehicle))
+            #     for v_key, v_value in vehicle.iteritems():
+            #         v_key = "set__" + str(v_key)
+            #         print(v_key)
+            #     customer_vehicle.update(**vehicle)
+            for vehicle in v:
+                v_obj = Vehicle()
+                try:
+                    v_obj.vehicle_type = vehicle['vehicle_type']
+                    v_obj.vehicle_number = vehicle['vehicle_number']
+                    v_obj.vehicle_rc_link = vehicle['vehicle_rc_link']
+                except:
+                    return Response(json.dumps({"Message": "Vehicle Data-Incomplete"}), status=400,
+                                    content_type="application/json")
+                v_obj.save()
+                modified_vehicles.append(v_obj)
+        k = "set__" + str(k)
+    return JSONDoc, modified_vehicles
 
 def check_auth(token):
     if token == "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM":
