@@ -27,7 +27,7 @@ public class ParkItExitScannerNavigationDrawer extends MaterialNavigationDrawer 
     @Override
     public void init(Bundle bundle) {
         MaterialSection scannerSection = newSection(
-                "Scanner",
+                "Exit Scanner",
                 new IconDrawable(this, Iconify.IconValue.fa_barcode),
                 new QRCodeScannerFragment()
         );
