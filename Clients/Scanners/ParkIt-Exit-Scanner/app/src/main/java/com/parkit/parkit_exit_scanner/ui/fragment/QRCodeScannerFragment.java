@@ -125,6 +125,8 @@ public class QRCodeScannerFragment extends Fragment {
 
         Log.d(Constants.LOG_TAG, "Exit Request Object : \n" + exitRequest );
 
+        // reload api service
+        RestClient restClient = new RestClient();
 
         // call api here
         RestClient.parkItService.requestExit(
@@ -133,11 +135,21 @@ public class QRCodeScannerFragment extends Fragment {
                 new Callback<Cost>() {
                     @Override
                     public void success(Cost cost, Response response) {
-                        // 200
+                        // 200 - successful entry
+                        Context ctx = QRCodeScannerFragment.this
+                                .getActivity().getApplicationContext();
+
+
                         Log.d(Constants.LOG_TAG, "in success callback");
                         if(response.getStatus() == 200) {
                             Log.d(Constants.LOG_TAG, "200 response");
                             Log.d(Constants.LOG_TAG, "Cost response : "+cost.toString());
+                            Utils.showShortToast("Successful Exit", ctx);
+                            Utils.showLongToast(
+                                    "Total parking cost : Rs. " + cost.getCost() +
+                                            "\nThis amount has been deducted from your ParkIt eWallet",
+                                    ctx);
+                            Utils.showShortToast("Thank You for using ParkIt :)", ctx);
                         } else {
                             Log.d(Constants.LOG_TAG, "Unexpected success response code : "
                                     +response.getStatus());
@@ -183,14 +195,21 @@ public class QRCodeScannerFragment extends Fragment {
                                         "\nSuccess Type : " + error.getSuccessType()
                         );
 
+                        ParkItError parkItError = null;
 
-                        //@TODO:Catch cost cannot be cast to parkItError exception
                         try {
-                            ParkItError parkItError = (ParkItError) error.getBody();
+                            parkItError =
+                                    (ParkItError) error.getBodyAs(ParkItError.class);
                         } catch(ClassCastException cce) {
                             Log.d(Constants.LOG_TAG,
                                     "Class cast exception occurred while casting to ParkItError");
                         }
+
+                        // Log ParkIt Error
+                        Log.d(Constants.LOG_TAG,
+                                "ParkItError Object : " +
+                                        ((parkItError == null) ? "null" : parkItError.toString()));
+
                         if(error.getResponse() == null) {
                             Log.d(Constants.LOG_TAG, "Null response");
                             return;
@@ -205,11 +224,25 @@ public class QRCodeScannerFragment extends Fragment {
                                         "\nPlease Contact ParkIt Officials", ctx);
                                 break;
                             case 404:
+                                if(parkItError == null) {
+                                    Log.d(Constants.LOG_TAG, "ParkIt Error object is null");
+                                    return;
+                                }
                                 // customer or active transaction not found
-                                Utils.showShortToast(
-                                        "No active transactions found for customer", ctx);
+                                if(parkItError.getMessage().contains("Customer")) {
+                                    // customer object not found
+                                    Utils.showLongToast(
+                                            "Customer account not found on ParkIt Servers, " +
+                                            "please register on ParkIt to park with ease.", ctx);
+                                    Log.d(Constants.LOG_TAG, "Customer not found 404");
+                                } else {
+                                    Utils.showShortToast(
+                                            "No active parking transaction.", ctx);
+                                    Log.d(Constants.LOG_TAG, "Active transaction not found 404");
+                                }
                                 break;
                             case 409:
+                                // user entered from a different parking lot
                                 Utils.showShortToast(
                                         "Illegal activity detected !!!", ctx);
                                 break;

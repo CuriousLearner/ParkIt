@@ -8,13 +8,17 @@ import com.parkit.parkit_exit_scanner.rest.services.ParkItService;
 public class ParkItError {
 
 
-    public String Message;
+    private String Message;
 
     public ParkItError(String message) {
         this.Message = message;
     }
 
     public String toString() {
-        return "Message : "+this.Message;
+        return "Error Description : "+this.Message;
+    }
+
+    public String getMessage() {
+        return this.Message;
     }
 }

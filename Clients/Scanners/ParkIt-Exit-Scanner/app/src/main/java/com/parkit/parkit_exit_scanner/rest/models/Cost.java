@@ -5,7 +5,7 @@ package com.parkit.parkit_exit_scanner.rest.models;
  */
 public class Cost {
 
-    public Double cost;
+    private Double cost;
 
     public Cost(Double cost) {
         this.cost = cost;
@@ -14,4 +14,6 @@ public class Cost {
     public String toString() {
         return "Total Cost (in Rupees) : " + this.cost;
     }
+
+    public Double getCost() { return cost; }
 }
