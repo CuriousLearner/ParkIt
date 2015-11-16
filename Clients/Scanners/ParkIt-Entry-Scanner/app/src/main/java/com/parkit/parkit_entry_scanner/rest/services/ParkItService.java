@@ -15,7 +15,7 @@ public interface ParkItService {
 
 
 
-    public static final String BASE_URL = "http://192.168.1.2:5000";
+    public static final String BASE_URL = "http://192.168.1.4:5000";
 
 
     @POST("/api/customer/entry/")

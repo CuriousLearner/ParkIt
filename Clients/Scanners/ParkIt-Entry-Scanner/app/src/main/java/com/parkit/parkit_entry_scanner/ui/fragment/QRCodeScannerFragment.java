@@ -141,6 +141,7 @@ public class QRCodeScannerFragment extends Fragment {
                         //       vehicle_type not present
                         //
                         // 401 - invalid token
+                        // 402 - balance is low
                         // 404 - customer not found
                         // 409 - already an active transaction for user OR
                         //       parking full for given vehicle_type
@@ -164,11 +165,10 @@ public class QRCodeScannerFragment extends Fragment {
                                         "\nSuccess Type : " + error.getSuccessType()
                         );
 
-                        ParkItError  parkItError = new ParkItError(error.getMessage());
+                        ParkItError  parkItError = (ParkItError) error.getBodyAs(ParkItError.class);
                         // log park-it error
                         Log.d(Constants.LOG_TAG,
-                                "ParkIt API Error : \nStatus Code : "+error.getBody()+
-                                        "\nMessage : " +parkItError.getMessage());
+                                "ParkIt API Error : " + parkItError.toString());
 
                         switch(error.getResponse().getStatus()) {
 
@@ -180,13 +180,19 @@ public class QRCodeScannerFragment extends Fragment {
                                                 "\n Please contact ParkIt officials", ctx);
 
                                 break;
+                            case 402:
+                                // balance is low
+                                Utils.showLongToast(
+                                        "Your eWallet balance is low, please recharge",
+                                        ctx);
+                                break;
                             case 404:
                                 // customer not found
                                 Utils.showShortToast(
                                         "Customer account not found on ParkIt Servers", ctx);
                             case 409:
                                 // parking full OR already active transaction
-                                if (!parkItError.getMessage().contains("Parking Full")) {
+                                if (parkItError.getMessage().contains("Parking Full")) {
                                     SharedPreferences scannerConfig =
                                             QRCodeScannerFragment.this.getActivity()
                                                     .getSharedPreferences(Constants.SHARED_PREFERENCES_KEY, 0);
@@ -197,7 +203,13 @@ public class QRCodeScannerFragment extends Fragment {
                                     Utils.showShortToast(
                                             "Parking full for " + vehicleType +
                                                     "s, please visit another parking lot", ctx);
-                                    }
+                                } else {
+                                    // already active transaction
+                                    Utils.showLongToast(
+                                            "Your vehicle is already parked",
+                                            ctx
+                                    );
+                                }
                                 break;
                             default:
                                 // unexpected status

@@ -13,4 +13,6 @@ public class ParkItError {
 
     public String getMessage() { return this.Message; }
 
+    public String toString() { return "Error Description : " + this.Message; }
+
 }
