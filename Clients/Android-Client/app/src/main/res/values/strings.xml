@@ -31,6 +31,8 @@
     <string name="label_click_btn">Take a pic</string>
     <string name="label_gen_qr_code_btn">Generate QR Code</string>
     <string name="hint_message_qr">hash value …</string>
+    <string name="label_balance">ParkIt Credits : </string>
+    <string name="label_balance_placeholder">---</string>
 
 
 
