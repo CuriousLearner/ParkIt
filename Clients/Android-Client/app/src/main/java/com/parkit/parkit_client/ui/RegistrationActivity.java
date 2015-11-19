@@ -24,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.zxing.qrcode.encoder.QRCode;
+import com.parkit.parkit_client.Constants;
 import com.parkit.parkit_client.MainActivity;
 import com.parkit.parkit_client.R;
 import com.parkit.parkit_client.rest.RestClient;
@@ -97,6 +98,10 @@ public class RegistrationActivity extends ActionBarActivity {
     public static final int RESULT_CODE_OK = -1;
 
 
+    // keys
+    public static final String RC_IMAGE_URI_KEY = "rcImageUri";
+    public static final String LICENSE_IMAGE_URI_KEY = "licenseImageUri";
+
 
     // utility method
     public void showShortToast(String message) {
@@ -142,7 +147,8 @@ public class RegistrationActivity extends ActionBarActivity {
         ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(
                 this.getApplicationContext(),
                 android.R.layout.simple_spinner_item,
-                vehicleTypes);
+                vehicleTypes
+        );
         vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
         vehicleTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -186,6 +192,33 @@ public class RegistrationActivity extends ActionBarActivity {
 
     }
 
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+
+        // save URIs
+        if(licenseImageUri != null) {
+            outState.putString(LICENSE_IMAGE_URI_KEY, licenseImageUri.toString());
+        }
+
+        if(rcImageUri != null) {
+            outState.putString(RC_IMAGE_URI_KEY, rcImageUri.toString());
+        }
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+
+        // restore URIs
+        if(!savedInstanceState.getString(LICENSE_IMAGE_URI_KEY, "").equals(""))
+            licenseImageUri = Uri.parse(savedInstanceState.getString(LICENSE_IMAGE_URI_KEY, ""));
+
+        if(!savedInstanceState.getString(RC_IMAGE_URI_KEY, "").equals(""))
+            rcImageUri = Uri.parse(savedInstanceState.getString(RC_IMAGE_URI_KEY, ""));
+
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @OnClick(R.id.btn_license_click)
     public void licenseClick() {
@@ -233,8 +266,7 @@ public class RegistrationActivity extends ActionBarActivity {
 
 
 
-        // uploadLicenseAndRCImages();
-        registerOnParkIt();
+        uploadLicenseAndRCImages();
 
     }
 
@@ -371,8 +403,6 @@ public class RegistrationActivity extends ActionBarActivity {
 
         if(dirsMade)
             showShortToast("Image storage directory created");
-        else
-            showShortToast("Image storage directory not created");
 
         /*boolean isCreated = false;
         try {
@@ -396,9 +426,6 @@ public class RegistrationActivity extends ActionBarActivity {
                     // rcImageUri has been set
 
                     Bitmap rcPreview = decodeUri(rcImageUri);
-
-
-
 
                     // display preview
                     if(rcPreview != null) {
@@ -427,15 +454,7 @@ public class RegistrationActivity extends ActionBarActivity {
 
 
             }
-
-
-
-
         }
-
-
-
-
     }
 
 
@@ -502,7 +521,7 @@ public class RegistrationActivity extends ActionBarActivity {
 
     private void registerOnParkIt() {
 
-        rcImageLink = "https://www.google.com";
+//        rcImageLink = "https://www.google.com";
         Vehicle vehicle = new Vehicle(
                 vehicleTypeSpinner.getSelectedItem().toString(),
                 vehicleNumberEdit.getText().toString(),
@@ -514,7 +533,7 @@ public class RegistrationActivity extends ActionBarActivity {
 
 
 
-        licenseImageLink = "https://www.google.com";
+//        licenseImageLink = "https://www.google.com";
         final Customer customer = new Customer(
                 firstNameEdit.getText().toString(),
                 lastNameEdit.getText().toString(),
@@ -529,6 +548,7 @@ public class RegistrationActivity extends ActionBarActivity {
 
         //call ParkIt API
         RestClient.parkItService.registerCustomer(
+                Constants.PARKIT_AUTH_TOKEN,
                 customer,
                 new Callback<QRCodeResponse>() {
                     @Override

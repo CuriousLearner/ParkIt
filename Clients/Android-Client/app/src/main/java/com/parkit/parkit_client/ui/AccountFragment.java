@@ -46,7 +46,7 @@ public class AccountFragment extends Fragment {
             String licenseLink = sharedPreferences.getString("license_link", "");
             String rcLink = sharedPreferences.getString("rc_link", "");
             if(!name.equals("")) {
-                welcomeView.setText("Welcome, " + name + "License link : ");
+                welcomeView.setText("Welcome, " + name);
                 if(!(   licenseLink.equals("") &&
                         hash.equals("") &&
                         rcLink.equals(""))) {
