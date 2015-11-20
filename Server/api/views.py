@@ -81,9 +81,9 @@ def get_customer():
                     content_type="application/json")
 
 
-@app.route('/api/customer/cid/<int:cid>')
-@app.route('/api/customer/cid/<int:cid>/')
-def get_single_customer(cid):
+@app.route('/api/customer/<QR_CODE_DATA>')
+@app.route('/api/customer/<QR_CODE_DATA>/')
+def get_single_customer(QR_CODE_DATA):
     '''
     returns all the events with GET request
     '''
@@ -95,7 +95,7 @@ def get_single_customer(cid):
         return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
                     content_type="application/json")
     try:
-        SingleCustomer = Customer.objects.get(cid=cid)
+        SingleCustomer = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
     except:
         return Response(json.dumps({"Message": "No Customer found"}), status=404,
                         content_type="application/json")
@@ -171,7 +171,7 @@ def get_customer_from_qr_and_enter_parking():
         if content['cash'] < 40: # 402 - Payment Required
             return Response(json.dumps({"Message": "Balance is low in your wallet. Please recharge first"}), status=402,
                             content_type="application/json")
-        # There is space in parking anc enough balance in wallet,
+        # There is space in parking and enough balance in wallet,
         # so create transaction for current user
         t = Transaction()
         t.active = True
