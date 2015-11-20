@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.parkit.parkit_client.ui.AccountFragment;
+import com.parkit.parkit_client.ui.ParkItWalletFragment;
 import com.parkit.parkit_client.ui.QRCodeGenFragment;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
@@ -32,9 +33,17 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
                 new QRCodeGenFragment()
         );
 
+        MaterialSection eWalletSection = newSection(
+                "ParkIt eWallet",
+                new IconDrawable(this, Iconify.IconValue.fa_money),
+                new ParkItWalletFragment()
+        );
+
         this.addSection(accountSection);
 
         this.addSection(qrCodeGenSection);
+
+        this.addSection(eWalletSection);
 
 
 

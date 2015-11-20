@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.parkit.parkit_exit_scanner.Constants;
 import com.parkit.parkit_exit_scanner.R;
@@ -26,15 +27,45 @@ public class ConfigurationFragment extends Fragment {
 
     private View view;
 
+    @Bind(R.id.text_parking_lot_id)
+    TextView parkingLotIDText;
+
+
+    @Bind(R.id.text_vehicle_type)
+    TextView vehicleTypeText;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         if(view == null) {
             view = inflater.inflate(R.layout.fragment_configuration, container, false);
             ButterKnife.bind(this, view);
+            showConfig();
 
         }
         return view;
+    }
+
+
+
+    private void showConfig() {
+
+        SharedPreferences scannerConfig = this.getActivity()
+                .getSharedPreferences(Constants.SHARED_PREFS_KEY, 0);
+
+        String parkingLotID = scannerConfig
+                .getString(Constants.CONFIG_KEY_PARKING_LOT_ID, "not configured");
+
+        String vehicleType = scannerConfig
+                .getString(Constants.CONFIG_KEY_VEHICLE_TYPE, "not configured");
+
+        parkingLotIDText.setText(
+                "Parking Lot ID : " + parkingLotID
+        );
+
+        vehicleTypeText.setText(
+                "Vehicle Type : " + vehicleType
+        );
     }
 
 
