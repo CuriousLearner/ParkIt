@@ -157,12 +157,15 @@ def get_customer_from_qr_and_enter_parking():
                 return Response(json.dumps({"Message": "Parking Full for four_wheeler"}, cls=PythonJSONEncoder), status=409,
                             content_type="application/json")
 
-        elif vehicle_type == 'heavy_vehicles':
-            if ParkingLot_obj.current_heavy_vehicles <= ParkingLot_obj.heavy_vehicles_capacity - 1:
-                ParkingLot_obj.current_heavy_vehicles += 1
+        elif vehicle_type == 'heavy_vehicle':
+            if ParkingLot_obj.current_heavy_vehicle <= ParkingLot_obj.heavy_vehicle_capacity - 1:
+                ParkingLot_obj.current_heavy_vehicle += 1
             else:
                 return Response(json.dumps({"Message": "Parking Full for heavy_vehicles"}, cls=PythonJSONEncoder), status=409,
                             content_type="application/json")
+        else:
+            return Response(json.dumps({"Message": "Invalid Vehicle type"}, cls=PythonJSONEncoder), status=400,
+                        content_type="application/json")
         ParkingLot_obj.save()
         # Check for balance in e-wallet
         ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(SingleCustomer.cid)
@@ -235,8 +238,11 @@ def make_transaction_on_exit():
                 transaction.total_cost = cost_obj.two_wheeler * total_time
             elif vehicle_type == 'four_wheeler':
                 transaction.total_cost = cost_obj.four_wheeler * total_time
-            elif vehicle_type == 'heavy_vehicles':
-                transaction.total_cost = cost_obj.heavy_vehicles * total_time
+            elif vehicle_type == 'heavy_vehicle':
+                transaction.total_cost = cost_obj.heavy_vehicle * total_time
+            else:
+                return Response(json.dumps({"Message": "Invalid Vehicle type"}), status=400, 
+                                content_type="application/json")
             # print(transaction.total_cost)
             transaction.active = False
             c.latest_transaction_cost = transaction.total_cost
@@ -251,9 +257,9 @@ def make_transaction_on_exit():
                 if ParkingLot_obj.current_four_wheeler >= 1:
                     ParkingLot_obj.current_four_wheeler -= 1
 
-            elif vehicle_type == 'heavy_vehicles':
-                if ParkingLot_obj.current_heavy_vehicles >= 1:
-                    ParkingLot_obj.current_heavy_vehicles -= 1
+            elif vehicle_type == 'heavy_vehicle':
+                if ParkingLot_obj.current_heavy_vehicle >= 1:
+                    ParkingLot_obj.current_heavy_vehicle -= 1
 
             c.save()
             ParkingLot_obj.transactions.append(transaction)
