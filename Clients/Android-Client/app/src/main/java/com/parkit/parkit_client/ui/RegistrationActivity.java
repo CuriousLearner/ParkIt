@@ -557,15 +557,26 @@ public class RegistrationActivity extends ActionBarActivity {
                         if (qrCodeResponse.QR_CODE_DATA != null) {
                             // success
                             SharedPreferences.Editor prefEditor =
-                                    getSharedPreferences("parkit", 0).edit();
+                                    getSharedPreferences(Constants.KEY_SHARED_PREFERENCES, 0)
+                                            .edit();
 
                             Log.d(LOG_TAG, "Hash received : \n"+qrCodeResponse.QR_CODE_DATA);
 
-                            prefEditor.putString("hash", qrCodeResponse.QR_CODE_DATA);
-                            prefEditor.putString("first_name", customer.first_name);
-                            prefEditor.putString("last_name", customer.last_name);
-                            prefEditor.putString("license_link", customer.driving_licence_link);
-                            prefEditor.putString("rc_link", customer.vehicles.get(0).vehicle_rc_link);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_HASH,
+                                    qrCodeResponse.QR_CODE_DATA);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_FIRST_NAME,
+                                    customer.first_name);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_LAST_NAME,
+                                    customer.last_name);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_LICENSE_LINK,
+                                    customer.driving_licence_link);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_RC_LINK,
+                                    customer.vehicles.get(0).vehicle_rc_link);
                             prefEditor.apply();
 
                             showShortToast("Successfully registered !!!");

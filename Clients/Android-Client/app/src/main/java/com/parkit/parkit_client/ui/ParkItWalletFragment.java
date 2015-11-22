@@ -75,6 +75,7 @@ public class ParkItWalletFragment extends Fragment {
 
             String userHash = sharedPreferences.getString(Constants.CONFIG_KEY_HASH, "");
 
+            Log.d(Constants.LOG_TAG, "Fetching wallet balance");
             RestClient.parkItService.getWalletBalance(
                     Constants.PARKIT_AUTH_TOKEN,
                     userHash,
@@ -120,5 +121,9 @@ public class ParkItWalletFragment extends Fragment {
 
     }
 
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchWalletBalance();
+    }
 }
