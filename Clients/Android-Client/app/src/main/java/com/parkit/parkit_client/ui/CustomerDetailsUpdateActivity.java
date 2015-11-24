@@ -467,7 +467,7 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
                                 Utils.showShortToast("Customer account not found !!!", ctx);
                                 break;
                             case 401:
-                                Log.d(Constants.LOG_TAG, "Customer account not found");
+                                Log.d(Constants.LOG_TAG, "Invalid auth token");
                                 Utils.showLongToast(
                                         "Internal Application Error !!!" +
                                                 "\nPlease contact ParkIt officials",

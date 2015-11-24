@@ -51,6 +51,7 @@
     </string-array>
     <string name="title_activity_customer_details_update">Update Account Information</string>
     <string name="label_update_details_btn">Update</string>
+    <string name="title_activity_add_vehicle">Add New Vehicle</string>
 
 
 

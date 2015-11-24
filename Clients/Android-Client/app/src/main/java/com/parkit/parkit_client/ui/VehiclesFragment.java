@@ -1,6 +1,7 @@
 package com.parkit.parkit_client.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,6 +40,7 @@ public class VehiclesFragment extends Fragment {
 
     private View view;
     private VehicleRecyclerAdapter vehicleRecyclerAdapter;
+    private Customer currentCustomer;
 
     // View Bindings
 
@@ -83,6 +86,11 @@ public class VehiclesFragment extends Fragment {
 
     private void fetchVehicles() {
 
+        if(RestClient.parkItService == null) {
+            // initalize service
+            RestClient restClient = new RestClient();
+        }
+
         SharedPreferences accountDetails = this.getActivity()
                 .getSharedPreferences(Constants.KEY_SHARED_PREFERENCES, 0);
 
@@ -109,6 +117,8 @@ public class VehiclesFragment extends Fragment {
                                 vehicleRecycler.setAdapter(
                                         new VehicleRecyclerAdapter(customer.vehicles));
                                 vehicleRecycler.setVisibility(View.VISIBLE);
+                                addVehicleBtn.setVisibility(View.VISIBLE);
+                                currentCustomer = customer;
 
 
                             } else {
@@ -158,5 +168,16 @@ public class VehiclesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         fetchVehicles();
+    }
+
+
+    // OnClicks
+
+    @OnClick(R.id.btn_add_vehicle)
+    public void openAddNewVehicleForm() {
+        Intent addNewVehicleIntent =
+                new Intent(this.getActivity(), AddVehicleActivity.class);
+        addNewVehicleIntent.putExtra(Constants.EXTRA_KEY_CUSTOMER, currentCustomer);
+        startActivity(addNewVehicleIntent);
     }
 }
