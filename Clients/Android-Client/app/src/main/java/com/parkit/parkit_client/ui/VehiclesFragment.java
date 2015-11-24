@@ -96,6 +96,9 @@ public class VehiclesFragment extends Fragment {
 
         String userHash = accountDetails.getString(Constants.CONFIG_KEY_HASH, "");
 
+
+        final Context ctx = this.getActivity().getApplicationContext();
+
         if(userHash.equals("")) {
             Log.d(Constants.LOG_TAG, "Hash not set");
             Utils.showShortToast("Hash error !!!", this.getActivity().getApplicationContext());
@@ -107,8 +110,7 @@ public class VehiclesFragment extends Fragment {
                     new Callback<Customer>() {
                         @Override
                         public void success(Customer customer, Response response) {
-                            Context ctx = VehiclesFragment.this.getActivity()
-                                    .getApplicationContext();
+
                             // 200
                             if(response.getStatus() == 200) {
                                 Log.d(Constants.LOG_TAG, "200 OK, Customer data fetched");
@@ -134,8 +136,6 @@ public class VehiclesFragment extends Fragment {
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Context ctx = VehiclesFragment.this.getActivity()
-                                    .getApplicationContext();
 
                             if(error.getResponse() == null) {
                                 Log.d(Constants.LOG_TAG, "Null response, error kind : "
