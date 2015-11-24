@@ -88,6 +88,22 @@ class ParkingLotView(ModelView):
         return current_user.has_role("admin") or current_user.has_role("super_admin")
 
 
+class CouponView(ModelView):
+    can_create = True
+    can_delete = True
+    can_edit = True
+    decorators = [login_required]
+
+    form_widget_args = {'coupon_id': {'disabled': True},
+                        'created_on': {'disabled': True},
+                        'modified_on': {'disabled': True},
+                        'QR_CODE_DATA': {'disabled': True}
+                        }
+
+    def is_accessible(self):
+        return current_user.has_role("super_admin")
+
+
 class UserView(ModelView):
     can_create = True
     can_delete = True
@@ -112,6 +128,7 @@ api.admin.add_view(CustomerView(api.models.Customer))
 api.admin.add_view(VehicleView(api.models.Vehicle))
 api.admin.add_view(ParkingLotView(api.models.ParkingLot))
 api.admin.add_view(TransactionView(api.models.Transaction))
+api.admin.add_view(CouponView(api.models.Coupon))
 api.admin.add_view(CostView(api.models.Cost))
 api.admin.add_view(UserView(api.models.User))
 api.admin.add_view(RoleView(api.models.Role))

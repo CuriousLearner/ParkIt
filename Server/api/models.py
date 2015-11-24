@@ -161,6 +161,41 @@ class Customer(db.Document):
         super(Customer, self).save(*args, **kwargs)
 
 
+class Coupon(db.Document):
+    coupon_id = db.IntField(unique=True)
+    coupon_code = db.StringField(max_length=30, unique=True)
+    amount = db.StringField(max_length=100)
+    is_valid = db.BooleanField()
+    QR_CODE_DATA = db.StringField(max_length=200)
+    created_on = db.DateTimeField()
+    modified_on = db.DateTimeField()
+
+    def __unicode__(self):
+        return str(self.coupon_id)
+
+    def get_dict(self):
+        return {'coupon_id': self.coupon_id,
+                'coupon_code': self.coupon_code,
+                'amount': self.amount,
+                'is_valid': self.is_valid,
+                'QR_CODE_DATA': self.QR_CODE_DATA
+                }
+
+    def __repr__(self):
+        return 'coupon_code ' + str(self.coupon_code)
+
+    def save(self, *args, **kwargs):
+        if self.coupon_id == None:
+            try:
+                self.coupon_id = self.__class__.objects.order_by('-coupon_id')[0].coupon_id + 1
+            except IndexError:
+                self.coupon_id = Coupon.objects.count() + 1
+        if not self.created_on:
+            self.created_on = datetime.now()
+        self.modified_on = datetime.now()
+        super(Coupon, self).save(*args, **kwargs)
+
+
 class Role(db.Document, RoleMixin):
     name = db.StringField(max_length=80, unique=True)
     description = db.StringField(max_length=255)
