@@ -1,7 +1,8 @@
 from api import app, db
-from flask import (render_template, jsonify, request, redirect, url_for,
-                   Response, make_response)
-from models import Customer, Vehicle, Transaction, ParkingLot, Cost
+from flask import (render_template, jsonify, request, redirect,
+                    url_for, Response, make_response)
+from models import (Customer, Vehicle, Transaction, ParkingLot,
+                    Cost, Coupon)
 from flask.ext.security import login_required, utils
 import json
 from datetime import datetime
@@ -261,9 +262,6 @@ def make_transaction_on_exit():
                 if ParkingLot_obj.current_heavy_vehicle >= 1:
                     ParkingLot_obj.current_heavy_vehicle -= 1
 
-            c.save()
-            ParkingLot_obj.transactions.append(transaction)
-            ParkingLot_obj.save()
             # Deduct balance from wallet
             # First check if there is enough balance, if not then first user would recharge
             # and then gates would open after successful deduction
@@ -279,6 +277,9 @@ def make_transaction_on_exit():
             # Check for balance in e-wallet
             ewallet_profile_url = "http://0.0.0.0:8000/profile?name=" + str(c.cid)
             ewallet = json.loads(urllib2.urlopen(ewallet_profile_url).read())
+            c.save()
+            ParkingLot_obj.transactions.append(transaction)
+            ParkingLot_obj.save()
             if ewallet['cash'] < 0:
                 return Response(json.dumps({"cost": transaction.total_cost, "balance": ewallet['cash']}), status=402,
                                 content_type="application/json")
@@ -428,6 +429,47 @@ def modify_customer_details():
         c.update(**modified_json)
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA, "Message": "Modified Successfully."}), status=200,
                             content_type="application/json")
+
+@app.route('/api/ewallet/recharge/<QR_CODE_DATA>/<coupon_code>', methods=['GET', 'POST'])
+@app.route('/api/ewallet/recharge/<QR_CODE_DATA>/<coupon_code>/', methods=['GET', 'POST'])
+def recharge_wallet(QR_CODE_DATA, coupon_code):
+    if request.method == 'POST':
+        token = request.headers.get('token')
+        if not token:
+            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                            content_type="application/json")
+        if not check_auth(token):
+            return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                        content_type="application/json")
+        try:
+            c = Customer.objects.get(QR_CODE_DATA=QR_CODE_DATA)
+        except:
+            return Response(json.dumps({"Message": "Customer not found"}), status=404,
+                        content_type="application/json")
+        try:
+            coupon = Coupon.objects.get(coupon_code=coupon_code)
+        except:
+            return Response(json.dumps({"Message": "Coupon not found"}), status=404,
+                        content_type="application/json")
+        if coupon.is_valid:
+            # Login into wallet
+            ewallet_login_url = "http://0.0.0.0:8000/login?x=2&name=" + str(c.cid) + "&password=" + str(c.QR_CODE_DATA)
+            login_content = json.loads(urllib2.urlopen(ewallet_login_url).read())
+            # if successful login then recharge balance
+            ewallet_recharge_balance_url = "http://0.0.0.0:8000/transaction?x=2&name=" + str(c.cid) + "&amount=" + str(int(coupon.amount))
+            dedution_content = json.loads(urllib2.urlopen(ewallet_recharge_balance_url).read())
+            # Now logout from e-wallet
+            ewallet_logout_url = "http://0.0.0.0:8000/logout?name=" + str(c.cid)
+            logout_content = json.loads(urllib2.urlopen(ewallet_logout_url).read())
+            coupon.QR_CODE_DATA = QR_CODE_DATA
+            coupon.is_valid = False
+            coupon.save()
+            return Response(json.dumps({"Message": "Recharge Successfully"}), status=200,
+                        content_type="application/json")
+        else:
+            return Response(json.dumps({"Message": "Coupon not valid"}), status=400,
+                        content_type="application/json")
+
 
 @app.errorhandler(404)
 def not_found(error):
