@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.parkit.parkit_client.ui.AccountFragment;
+import com.parkit.parkit_client.ui.ParkItAPIHostConfigFragment;
 import com.parkit.parkit_client.ui.ParkItWalletFragment;
 import com.parkit.parkit_client.ui.QRCodeGenFragment;
 import com.parkit.parkit_client.ui.UpdateInformationFragment;
@@ -54,6 +55,12 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
                 new VehiclesFragment()
         );
 
+        MaterialSection dynamicAPIHostConfigSection = newSection(
+                "API Host Configuration",
+                new IconDrawable(this, Iconify.IconValue.fa_cog),
+                new ParkItAPIHostConfigFragment()
+        );
+
         this.addSection(accountSection);
 
         this.addSection(qrCodeGenSection);
@@ -64,6 +71,7 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
 
         this.addSection(myVehiclesSection);
 
+        this.addSection(dynamicAPIHostConfigSection);
 
         this.setDefaultSectionLoaded(0);
         disableLearningPattern();
