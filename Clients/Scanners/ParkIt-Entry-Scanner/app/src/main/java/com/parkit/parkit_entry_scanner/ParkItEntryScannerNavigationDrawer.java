@@ -10,6 +10,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.parkit.parkit_entry_scanner.ui.fragment.ConfigurationFragment;
+import com.parkit.parkit_entry_scanner.ui.fragment.DynamicAPIHostConfigFragment;
 import com.parkit.parkit_entry_scanner.ui.fragment.QRCodeScannerFragment;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
@@ -24,7 +25,7 @@ public class ParkItEntryScannerNavigationDrawer extends MaterialNavigationDrawer
 
     @Override
     public void init(Bundle bundle) {
-        MaterialSection scannerSection, configSection;
+        MaterialSection scannerSection, configSection, dynamicAPIHostConfigSection;
 
 
         scannerSection = newSection(
@@ -40,9 +41,16 @@ public class ParkItEntryScannerNavigationDrawer extends MaterialNavigationDrawer
                 new ConfigurationFragment()
         );
 
+        dynamicAPIHostConfigSection = newSection(
+                "API Host Configuration",
+                new IconDrawable(this, Iconify.IconValue.fa_cogs),
+                new DynamicAPIHostConfigFragment()
+        );
+
 
         this.addSection(scannerSection);
         this.addSection(configSection);
+        this.addSection(dynamicAPIHostConfigSection);
 
         this.setDefaultSectionLoaded(0);
 
