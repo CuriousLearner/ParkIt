@@ -125,6 +125,10 @@ public class QRCodeScannerFragment extends Fragment {
 
         Log.d(Constants.LOG_TAG, "Exit Request Object : \n" + exitRequest );
 
+        // application context
+        final Context ctx = this.getActivity().getApplicationContext();
+
+
         // reload api service
         RestClient restClient = new RestClient();
 
@@ -136,9 +140,6 @@ public class QRCodeScannerFragment extends Fragment {
                     @Override
                     public void success(Cost cost, Response response) {
                         // 200 - successful entry
-                        Context ctx = QRCodeScannerFragment.this
-                                .getActivity().getApplicationContext();
-
 
                         Log.d(Constants.LOG_TAG, "in success callback");
                         if(response.getStatus() == 200) {
@@ -163,8 +164,6 @@ public class QRCodeScannerFragment extends Fragment {
                         // 404 - customer not found OR
                         //       active transaction not found
                         // 409 - entrance lot and exit lot do not match
-                        Context ctx = QRCodeScannerFragment
-                                .this.getActivity().getApplicationContext();
 
                         // log error
                         Log.d(Constants.LOG_TAG,
@@ -211,7 +210,8 @@ public class QRCodeScannerFragment extends Fragment {
                                         ((parkItError == null) ? "null" : parkItError.toString()));
 
                         if(error.getResponse() == null) {
-                            Log.d(Constants.LOG_TAG, "Null response");
+                            Log.d(Constants.LOG_TAG,
+                                    "Null response, error kind : "+error.getKind());
                             return;
                         }
 
