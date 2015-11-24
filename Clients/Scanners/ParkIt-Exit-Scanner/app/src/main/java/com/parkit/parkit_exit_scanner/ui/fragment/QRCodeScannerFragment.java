@@ -223,6 +223,12 @@ public class QRCodeScannerFragment extends Fragment {
                                 Utils.showShortToast("Internal Application Error," +
                                         "\nPlease Contact ParkIt Officials", ctx);
                                 break;
+                            case 402:
+                                // balance is low
+                                Utils.showLongToast(
+                                        "Your eWallet balance is low, please recharge",
+                                        ctx);
+                                break;
                             case 404:
                                 if(parkItError == null) {
                                     Log.d(Constants.LOG_TAG, "ParkIt Error object is null");

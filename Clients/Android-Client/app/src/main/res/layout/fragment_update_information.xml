@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="10dp"
+    style="@style/ParkItNavigationDrawerTheme"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <!--Personal Details Card-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/card_border_background"
+                android:orientation="vertical"
+                >
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+                    <!--Title-->
+                    <TextView
+                        android:layout_width="200dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="4"
+                        android:text="@string/title_personal_details"
+                        />
+                    <!--Edit Button-->
+                    <Button
+                        android:layout_width="75dp"
+                        android:layout_height="50dp"
+                        android:layout_weight="1"
+                        android:id="@+id/btn_edit"
+                        android:text="@string/label_edit"
+                        android:visibility="gone"
+                        />
+
+                </LinearLayout>
+
+                <!-- Details -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/linear_layout_personal_details"
+                    android:visibility="gone"
+                    android:orientation="vertical">
+                    <!--First Name-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="35dp"
+                            android:text="@string/label_first_name"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="7.5dp"
+                            android:id="@+id/text_first_name"
+                            />
+                    </LinearLayout>
+                    <!--Last Name-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="35dp"
+                            android:text="@string/label_last_name"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/text_last_name"
+                            android:layout_marginLeft="7.5dp"
+                            />
+                    </LinearLayout>
+                    <!--Contact Number-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:layout_width="150dp"
+                            android:layout_height="35dp"
+                            android:text="@string/label_contact_number"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/text_contact_number"
+                            android:layout_marginLeft="7.5dp"
+                            />
+                    </LinearLayout>
+                    <!--Address-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginBottom="5dp"
+                        >
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_address"
+                            />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/text_address"
+                            />
+                    </LinearLayout>
+                    <!--Driving License-->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        >
+                        <!--Title-->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="25dp"
+                            android:text="@string/label_driving_license"
+                            />
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            >
+                            <!--Image View-->
+                            <ImageView
+                                android:layout_width="190dp"
+                                android:layout_height="175dp"
+                                android:id="@+id/image_view_license"
+                                android:background="@drawable/abc_popup_background_mtrl_mult"
+                                />
+
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!--Vehicles Card-->
+            <!--<LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/linear_layout_vehicles_root"
+                android:orientation="horizontal"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:background="@drawable/card_border_background"
+                >
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <!-Vehicles Title-/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="30dp"
+                            android:layout_weight="4"
+                            android:text="@string/title_vehicles"
+                            />
+                        <!-Add Vehicle Button-/>
+                        <Button
+                            android:layout_width="75dp"
+                            android:layout_height="50dp"
+                            android:layout_weight="0.45"
+                            android:text="@string/label_add_vehicle"
+                            />
+
+
+
+
+                    </LinearLayout>
+                    <!-Custom Vehicle Card-/>
+                    <!-<include layout="@layout/custom_vehicle_layout" />-/>
+                    <android.support.v7.widget.RecyclerView
+                        xmlns:android="http://schemas.android.com/apk/res/android"
+                        xmlns:tools="http://schemas.android.com/tools"
+                        android:id="@+id/recycler_view_vehicles"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:context=".ParkItNavigationDrawer"/>
+
+
+                </LinearLayout>
+
+            </LinearLayout>-->
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</FrameLayout>

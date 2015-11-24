@@ -23,8 +23,8 @@
     <string name="hint_contact_number">Contact Number …</string>
     <string name="label_address">Address</string>
     <string name="hint_address">Address …</string>
-    <string name="label_vehicle_number">Vehicle Number</string>
-    <string name="hint_vehicle_number">Vehicle Number …</string>
+    <string name="label_vehicle_number">Vehicle\'s License Plate Number</string>
+    <string name="hint_vehicle_number">Vehicle\'s License Plate Number …</string>
     <string name="label_vehicle_type">Vehicle Type</string>
     <string name="label_license">Upload an image of your driving licence</string>
     <string name="label_rc">Upload an image of your vehicle\'s RC</string>
@@ -33,6 +33,13 @@
     <string name="hint_message_qr">hash value …</string>
     <string name="label_balance">ParkIt Credits : </string>
     <string name="label_balance_placeholder">---</string>
+    <string name="title_personal_details">Personal Details</string>
+    <string name="title_vehicles">Vehicles</string>
+    <string name="title_rc">Registration Certificate</string>
+    <string name="label_edit">Edit</string>
+    <string name="label_add_vehicle">Add</string>
+    <string name="label_driving_license">Driving License</string>
+
 
 
 
@@ -42,6 +49,8 @@
         <item>four_wheeler</item>
         <item>heavy_vehicle</item>
     </string-array>
+    <string name="title_activity_customer_details_update">Update Account Information</string>
+    <string name="label_update_details_btn">Update</string>
 
 
 

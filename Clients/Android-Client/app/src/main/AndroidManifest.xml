@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.parkit.parkit_client" >
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -27,6 +26,10 @@
         <activity
             android:name=".ui.RegistrationActivity"
             android:label="@string/title_activity_registration" >
+        </activity>
+        <activity
+            android:name=".ui.CustomerDetailsUpdateActivity"
+            android:label="@string/title_activity_customer_details_update" >
         </activity>
     </application>
 
