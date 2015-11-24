@@ -212,6 +212,7 @@ public class QRCodeScannerFragment extends Fragment {
                         if(error.getResponse() == null) {
                             Log.d(Constants.LOG_TAG,
                                     "Null response, error kind : "+error.getKind());
+                            Utils.showShortToast("Unsuccessfull entry !!!", ctx);
                             return;
                         }
 
