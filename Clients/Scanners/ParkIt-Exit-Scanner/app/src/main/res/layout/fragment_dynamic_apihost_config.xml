@@ -1,0 +1,43 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="10dp"
+    android:layout_marginRight="10dp"
+    tools:context="com.parkit.parkit_exit_scanner.ui.fragment.DynamicAPIHostConfigFragment">
+
+    <!--Root Layout-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!--ParkIt API Host Address-->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_api_host_address"
+            android:textSize="25sp"
+            />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/edit_api_host_address"
+            android:inputType="text"
+            android:hint="@string/hint_api_host_address"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:id="@+id/btn_refresh_parkit_api_service"
+            android:text="@string/label_refresh_api"
+            />
+
+
+
+
+    </LinearLayout>
+
+</FrameLayout>

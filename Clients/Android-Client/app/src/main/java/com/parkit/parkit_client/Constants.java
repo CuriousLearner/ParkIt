@@ -19,5 +19,9 @@ public class Constants {
     public static final String EXTRA_KEY_CUSTOMER = "currentCustomer";
 
 
+    // variable
+    public static String PARKIT_HOST_ADDRESS = "http://192.168.1.4:5000";
+
+
 
 }

@@ -110,6 +110,8 @@ public class QRCodeScannerFragment extends Fragment {
                 scannerConfig.getString(Constants.CONFIG_KEY_VEHICLE_TYPE, "")
         );
 
+        final Context ctx = this.getActivity().getApplicationContext();
+
         Log.d(Constants.LOG_TAG, "Entry Request Object : \n" + entryRequest);
 
         RestClient.parkItService.requestEntry(
@@ -119,8 +121,6 @@ public class QRCodeScannerFragment extends Fragment {
                     @Override
                     public void success(Customer customer, Response response) {
                        // 200 - successful entry
-                        Context ctx =
-                                QRCodeScannerFragment.this.getActivity().getApplicationContext();
 
                         Log.d(Constants.LOG_TAG, "in onSuccess");
                         logResponse(response);
@@ -146,6 +146,13 @@ public class QRCodeScannerFragment extends Fragment {
                         // 409 - already an active transaction for user OR
                         //       parking full for given vehicle_type
 
+                        if(error.getResponse() == null) {
+                            Log.d(Constants.LOG_TAG, "Response is null, error kind : " +
+                                    error.getKind());
+                            Utils.showShortToast("Unsuccessfull entry !!!", ctx);
+                            return;
+                        }
+
                         Context ctx =
                                 QRCodeScannerFragment.this.getActivity().getApplicationContext();
 
@@ -168,7 +175,8 @@ public class QRCodeScannerFragment extends Fragment {
                         ParkItError  parkItError = (ParkItError) error.getBodyAs(ParkItError.class);
                         // log park-it error
                         Log.d(Constants.LOG_TAG,
-                                "ParkIt API Error : " + parkItError.toString());
+                                "ParkIt API Error : "
+                                        +((parkItError == null)? "null" : parkItError.toString()));
 
                         switch(error.getResponse().getStatus()) {
 

@@ -2,7 +2,9 @@ package com.parkit.parkit_entry_scanner.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.parkit.parkit_entry_scanner.Constants;
 import com.parkit.parkit_entry_scanner.rest.services.ParkItService;
+import com.parkit.parkit_entry_scanner.ui.fragment.ConfigurationFragment;
 
 import retrofit.RestAdapter;
 import retrofit.RetrofitError;
@@ -31,7 +33,8 @@ public class RestClient {
 
         RestAdapter parkItAdapter = new RestAdapter.Builder()
                 .setConverter(gsonConverter)
-                .setEndpoint(ParkItService.BASE_URL)
+//                .setEndpoint(ParkItService.BASE_URL)
+                .setEndpoint(Constants.PARKIT_API_HOST_ADDRESS)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
 

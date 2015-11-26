@@ -51,6 +51,10 @@
     </string-array>
     <string name="title_activity_customer_details_update">Update Account Information</string>
     <string name="label_update_details_btn">Update</string>
+    <string name="title_activity_add_vehicle">Add New Vehicle</string>
+    <string name="label_api_host_address">API Host Address</string>
+    <string name="hint_api_host_address">host address Ex: 192.168.1.1 …</string>
+    <string name="label_refresh_api">Refresh API Configuration</string>
 
 
 

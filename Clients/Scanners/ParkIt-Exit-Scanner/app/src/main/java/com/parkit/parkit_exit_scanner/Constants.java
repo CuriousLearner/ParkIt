@@ -14,4 +14,6 @@ public class Constants {
             = "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM";
 
 
+    // variable
+    public static String PARKIT_API_HOST_ADDRESS = "http://192.168.1.4:5000";
 }

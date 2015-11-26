@@ -1,7 +1,10 @@
 package com.parkit.parkit_client.rest;
 
+import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.parkit.parkit_client.Constants;
 import com.parkit.parkit_client.rest.services.ImgurService;
 import com.parkit.parkit_client.rest.services.ParkItService;
 
@@ -18,6 +21,7 @@ public class RestClient {
 
     private static RestClient currentAdapter;
 
+    private static GsonConverter gsonConverter;
 
     public RestClient() {
 
@@ -28,12 +32,13 @@ public class RestClient {
 
 
         // create gson converter
-        GsonConverter gsonConverter = new GsonConverter(gson);
+        gsonConverter = new GsonConverter(gson);
 
 
         RestAdapter parkItAdapter = new RestAdapter.Builder()
                 .setConverter(gsonConverter)
-                .setEndpoint(ParkItService.BASE_URL)
+                //.setEndpoint(ParkItService.BASE_URL)
+                .setEndpoint(Constants.PARKIT_HOST_ADDRESS)
                 .setLogLevel(RestAdapter.LogLevel.FULL)
                 .build();
 
@@ -53,6 +58,21 @@ public class RestClient {
         imgurService = imgurAdapter.create(ImgurService.class);
 
 
+    }
+
+    public static void refreshParkItService(String hostAddress) {
+
+        if(RestClient.parkItService == null) {
+            // initialize rest client
+            RestClient restClient = new RestClient();
+        }
+
+        String baseURL = "http://"+hostAddress+":5000";
+        Constants.PARKIT_HOST_ADDRESS = baseURL;
+        Log.d(Constants.LOG_TAG, "New ParkIt API base url : "+baseURL);
+
+        RestClient restClient = new RestClient();
+        Log.d(Constants.LOG_TAG, "ParkIt API service refreshed");
     }
 
 

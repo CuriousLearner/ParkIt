@@ -1,6 +1,7 @@
 package com.parkit.parkit_client.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -38,6 +40,7 @@ public class VehiclesFragment extends Fragment {
 
     private View view;
     private VehicleRecyclerAdapter vehicleRecyclerAdapter;
+    private Customer currentCustomer;
 
     // View Bindings
 
@@ -83,10 +86,18 @@ public class VehiclesFragment extends Fragment {
 
     private void fetchVehicles() {
 
+        if(RestClient.parkItService == null) {
+            // initalize service
+            RestClient restClient = new RestClient();
+        }
+
         SharedPreferences accountDetails = this.getActivity()
                 .getSharedPreferences(Constants.KEY_SHARED_PREFERENCES, 0);
 
         String userHash = accountDetails.getString(Constants.CONFIG_KEY_HASH, "");
+
+
+        final Context ctx = this.getActivity().getApplicationContext();
 
         if(userHash.equals("")) {
             Log.d(Constants.LOG_TAG, "Hash not set");
@@ -99,8 +110,7 @@ public class VehiclesFragment extends Fragment {
                     new Callback<Customer>() {
                         @Override
                         public void success(Customer customer, Response response) {
-                            Context ctx = VehiclesFragment.this.getActivity()
-                                    .getApplicationContext();
+
                             // 200
                             if(response.getStatus() == 200) {
                                 Log.d(Constants.LOG_TAG, "200 OK, Customer data fetched");
@@ -109,6 +119,8 @@ public class VehiclesFragment extends Fragment {
                                 vehicleRecycler.setAdapter(
                                         new VehicleRecyclerAdapter(customer.vehicles));
                                 vehicleRecycler.setVisibility(View.VISIBLE);
+                                addVehicleBtn.setVisibility(View.VISIBLE);
+                                currentCustomer = customer;
 
 
                             } else {
@@ -124,8 +136,6 @@ public class VehiclesFragment extends Fragment {
 
                         @Override
                         public void failure(RetrofitError error) {
-                            Context ctx = VehiclesFragment.this.getActivity()
-                                    .getApplicationContext();
 
                             if(error.getResponse() == null) {
                                 Log.d(Constants.LOG_TAG, "Null response, error kind : "
@@ -158,5 +168,16 @@ public class VehiclesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         fetchVehicles();
+    }
+
+
+    // OnClicks
+
+    @OnClick(R.id.btn_add_vehicle)
+    public void openAddNewVehicleForm() {
+        Intent addNewVehicleIntent =
+                new Intent(this.getActivity(), AddVehicleActivity.class);
+        addNewVehicleIntent.putExtra(Constants.EXTRA_KEY_CUSTOMER, currentCustomer);
+        startActivity(addNewVehicleIntent);
     }
 }

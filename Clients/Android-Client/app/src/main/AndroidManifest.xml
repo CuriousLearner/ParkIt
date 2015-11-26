@@ -13,7 +13,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/ParkItColorTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,11 +26,18 @@
             android:theme="@style/ParkItNavigationDrawerTheme" />
         <activity
             android:name=".ui.RegistrationActivity"
-            android:label="@string/title_activity_registration" >
+            android:label="@string/title_activity_registration"
+            android:theme="@style/ParkItColorTheme" >
         </activity>
         <activity
             android:name=".ui.CustomerDetailsUpdateActivity"
-            android:label="@string/title_activity_customer_details_update" >
+            android:label="@string/title_activity_customer_details_update"
+            android:theme="@style/ParkItColorTheme" >
+        </activity>
+        <activity
+            android:name=".ui.AddVehicleActivity"
+            android:theme="@style/ParkItColorTheme"
+            android:label="@string/title_activity_add_vehicle" >
         </activity>
     </application>
 

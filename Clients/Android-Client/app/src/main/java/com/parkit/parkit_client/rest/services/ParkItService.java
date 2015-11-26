@@ -22,7 +22,7 @@ import retrofit.http.Query;
 public interface ParkItService {
 
 
-    final static String BASE_URL = "http://192.168.1.4:5000";
+    public static String BASE_URL = "http://192.168.1.4:5000";
 
 
     @POST("/api/customer/register/")

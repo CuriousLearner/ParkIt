@@ -10,6 +10,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
 import com.parkit.parkit_exit_scanner.ui.fragment.ConfigurationFragment;
+import com.parkit.parkit_exit_scanner.ui.fragment.DynamicAPIHostConfigFragment;
 import com.parkit.parkit_exit_scanner.ui.fragment.QRCodeScannerFragment;
 
 import it.neokree.materialnavigationdrawer.MaterialNavigationDrawer;
@@ -39,10 +40,18 @@ public class ParkItExitScannerNavigationDrawer extends MaterialNavigationDrawer 
         );
 
 
-        this.addSection(scannerSection);        // section number : 0
+        MaterialSection dynamicAPIHostConfigSection = newSection(
+                "API Host Configuration",
+                new IconDrawable(this, Iconify.IconValue.fa_cogs),
+                new DynamicAPIHostConfigFragment()
+        );
 
-        this.addSection(configurationSection);  // section number : 1
 
+        this.addSection(scannerSection);                // section number : 0
+
+        this.addSection(configurationSection);          // section number : 1
+
+        this.addSection(dynamicAPIHostConfigSection);   // section number : 2
 
 
         this.setDefaultSectionLoaded(0);

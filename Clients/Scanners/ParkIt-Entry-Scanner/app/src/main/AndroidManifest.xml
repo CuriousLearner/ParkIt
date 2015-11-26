@@ -12,7 +12,8 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name=".ui.activity.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+            android:theme="@style/ParkItColorTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,11 +27,13 @@
         </activity>
         <activity
             android:name=".ui.activity.ScannerConfigurationActivity"
-            android:label="@string/title_activity_scanner_configuration" >
+            android:label="@string/title_activity_scanner_configuration"
+            android:theme="@style/ParkItColorTheme" >
         </activity>
         <activity
             android:name=".ui.activity.ConfigurationLogin"
-            android:label="@string/title_activity_configuration_login" >
+            android:label="@string/title_activity_configuration_login"
+            android:theme="@style/ParkItColorTheme" >
         </activity>
     </application>
 

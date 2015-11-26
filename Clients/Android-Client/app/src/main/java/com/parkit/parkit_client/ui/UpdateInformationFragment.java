@@ -193,6 +193,8 @@ public class UpdateInformationFragment extends Fragment {
             return;
         }
 
+        final Context ctx = this.getActivity().getApplicationContext();
+
         // call ParkIt API here
         RestClient.parkItService.getCustomer(
                 Constants.PARKIT_AUTH_TOKEN,
@@ -203,10 +205,7 @@ public class UpdateInformationFragment extends Fragment {
                         // 200
                         if(response.getStatus() == 200) {
                             // successful resposnse
-                            Utils.showShortToast(
-                                    "Data fetched",
-                                    UpdateInformationFragment.this
-                                            .getActivity().getApplicationContext());
+                            Utils.showShortToast("Data fetched", ctx);
                             Log.d(Constants.LOG_TAG, "200 OK");
 
                             currentCustomer = customer;
@@ -219,10 +218,7 @@ public class UpdateInformationFragment extends Fragment {
 
                         } else {
 
-                            Utils.showShortToast(
-                                    "Account details could not be fetched",
-                                    UpdateInformationFragment.this
-                                            .getActivity().getApplicationContext());
+                            Utils.showShortToast("Account details could not be fetched", ctx);
                             Log.d(Constants.LOG_TAG, "Unexpected success response code : "
                                     +response.getStatus());
 
@@ -233,22 +229,16 @@ public class UpdateInformationFragment extends Fragment {
 
                     @Override
                     public void failure(RetrofitError error) {
-                        Context ctx = UpdateInformationFragment.this
-                                .getActivity().getApplicationContext();
+
                         if(error.getResponse() == null) {
                             Log.d(Constants.LOG_TAG, "Response is null, error kind : "
                                     +error.getKind());
-                            Utils.showShortToast(
-                                    "Account details could not be fetched",
-                                    ctx
-                            );
+                            Utils.showShortToast("Account details could not be fetched", ctx);
                         } else {
                             if(error.getResponse().getStatus() == 404) {
                                 Log.d(Constants.LOG_TAG, "404 NOT FOUND");
                                 Utils.showLongToast(
-                                        "Customer acoount not found on ParkIt servers",
-                                        ctx
-                                );
+                                        "Customer account not found on ParkIt servers", ctx);
                             } else {
                                 Utils.showShortToast("Account details could not be fetched", ctx);
                                 Log.d(Constants.LOG_TAG, "Unexpected error response code : "

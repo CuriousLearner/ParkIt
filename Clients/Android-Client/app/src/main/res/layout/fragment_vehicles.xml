@@ -39,6 +39,7 @@
                     android:layout_height="50dp"
                     android:id="@+id/btn_add_vehicle"
                     android:layout_weight="0.45"
+                    android:visibility="gone"
                     android:text="@string/label_add_vehicle"
                     />
 
