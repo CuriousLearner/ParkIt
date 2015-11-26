@@ -41,12 +41,13 @@ public class Customer implements Parcelable{
                 "\nAddress : " + this.address +
                 "\nDriving License Link : " + this.driving_licence_link +
                 "\nVehicles : ";
-        for(Vehicle v : this.vehicles) {
-            customerRep +=  "\n\tVehicle Number : "+ v.vehicle_number +
-                            "\n\tVehicle Type : " + v.vehicle_type +
-                            "\n\tVehicle's RC Link : " + v.vehicle_rc_link;
+        if (this.vehicles != null) {
+            for (Vehicle v : this.vehicles) {
+                customerRep += "\n\tVehicle Number : " + v.vehicle_number +
+                        "\n\tVehicle Type : " + v.vehicle_type +
+                        "\n\tVehicle's RC Link : " + v.vehicle_rc_link;
+            }
         }
-
         return customerRep;
     }
 

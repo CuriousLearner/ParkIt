@@ -400,6 +400,8 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
     private void saveOnParkIt() {
 
 
+        // remove vehicles field
+        updatedCustomer.vehicles = null;
 
         Log.d(Constants.LOG_TAG, "Customer to be PUT : "+updatedCustomer);
 
@@ -414,6 +416,7 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
             Log.d(Constants.LOG_TAG, "User hash has not been set");
             return;
         }
+
 
 
         RestClient.parkItService.putCustomer(
