@@ -424,8 +424,16 @@ def modify_customer_details():
         except:
             return Response(json.dumps({"Message": "Customer does not exist"}), status=404,
                     content_type="application/json")
-        modified_json, modified_vehicles = create_dict_for_update(request.json)
-        modified_json['vehicles'] = modified_vehicles
+        try:
+            modified_json, modified_vehicles = create_dict_for_update(request.json)
+        except:
+            return Response(json.dumps({"Message": "Vehicle Data-Incomplete"}), status=400,
+                            content_type="application/json")
+        if modified_vehicles:
+            for vehicle in c.vehicles:
+                v = Vehicle.objects.get(vid=vehicle.vid)
+                v.delete()
+            modified_json['vehicles'] = modified_vehicles
         c.update(**modified_json)
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA, "Message": "Modified Successfully."}), status=200,
                             content_type="application/json")
@@ -573,13 +581,9 @@ def create_dict_for_update(JSONDoc):
             #     customer_vehicle.update(**vehicle)
             for vehicle in v:
                 v_obj = Vehicle()
-                try:
-                    v_obj.vehicle_type = vehicle['vehicle_type']
-                    v_obj.vehicle_number = vehicle['vehicle_number']
-                    v_obj.vehicle_rc_link = vehicle['vehicle_rc_link']
-                except:
-                    return Response(json.dumps({"Message": "Vehicle Data-Incomplete"}), status=400,
-                                    content_type="application/json")
+                v_obj.vehicle_type = vehicle['vehicle_type']
+                v_obj.vehicle_number = vehicle['vehicle_number']
+                v_obj.vehicle_rc_link = vehicle['vehicle_rc_link']
                 v_obj.save()
                 modified_vehicles.append(v_obj)
         k = "set__" + str(k)
