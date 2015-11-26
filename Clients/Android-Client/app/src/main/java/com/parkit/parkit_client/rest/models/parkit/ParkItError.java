@@ -12,4 +12,8 @@ public class ParkItError {
         this.Message = message;
     }
 
+    public String toString() {
+        return "Message : " + ((this.Message == null) ? "null" : this.Message);
+    }
+
 }

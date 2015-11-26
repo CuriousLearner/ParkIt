@@ -4,6 +4,7 @@ package com.parkit.parkit_client.rest.services;
 import com.parkit.parkit_client.rest.models.parkit.Balance;
 import com.parkit.parkit_client.rest.models.parkit.Customer;
 import com.parkit.parkit_client.rest.models.parkit.CustomerModificationResponse;
+import com.parkit.parkit_client.rest.models.parkit.ParkItError;
 import com.parkit.parkit_client.rest.models.parkit.QRCodeResponse;
 
 
@@ -54,4 +55,11 @@ public interface ParkItService {
             Callback<CustomerModificationResponse> cb
     );
 
+    @POST("/api/ewallet/recharge/{hash}/{coupon_code}/")
+    public void rechargeWalletWithCoupon(
+            @Header("token") String token,
+            @Path("hash") String hash,
+            @Path("coupon_code") String couponCode,
+            Callback<ParkItError> cb
+    );
 }

@@ -55,6 +55,9 @@
     <string name="label_api_host_address">API Host Address</string>
     <string name="hint_api_host_address">host address Ex: 192.168.1.1 …</string>
     <string name="label_refresh_api">Refresh API Configuration</string>
+    <string name="label_add_parkit_credits">Add ParkIt Credits</string>
+    <string name="hint_coupon_code">Coupon Code …</string>
+    <string name="label_apply_coupon">Apply Coupon</string>
 
 
 
