@@ -12,6 +12,8 @@ public class Constants {
     public static final String CONFIG_KEY_FIRST_NAME = "first_name";
     public static final String CONFIG_KEY_LAST_NAME = "last_name";
     public static final String CONFIG_KEY_LICENSE_LINK = "license_link";
+    public static final String CONFIG_KEY_CONTACT_NO = "contact_no";
+    public static final String CONFIG_KEY_ADDRESS = "address";
     public static final String CONFIG_KEY_RC_LINK = "rc_link";
     public static final String CONFIG_KEY_BALANCE = "balance";
     public static final String KEY_SHARED_PREFERENCES = "parkit";

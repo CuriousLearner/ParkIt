@@ -577,6 +577,14 @@ public class RegistrationActivity extends ActionBarActivity {
                             prefEditor.putString(
                                     Constants.CONFIG_KEY_RC_LINK,
                                     customer.vehicles.get(0).vehicle_rc_link);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_CONTACT_NO,
+                                    customer.contact_no
+                            );
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_ADDRESS,
+                                    customer.address
+                            );
                             prefEditor.apply();
 
                             showShortToast("Successfully registered !!!");
