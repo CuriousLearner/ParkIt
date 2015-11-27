@@ -26,7 +26,7 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
     public void init(Bundle savedInstanceState) {
         MaterialSection accountSection  = newSection(
                 "My Account",
-                new IconDrawable(this, Iconify.IconValue.fa_money),
+                new IconDrawable(this, Iconify.IconValue.fa_cogs),
                 new AccountFragment()
         );
 
