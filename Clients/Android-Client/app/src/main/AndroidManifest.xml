@@ -36,8 +36,13 @@
         </activity>
         <activity
             android:name=".ui.AddVehicleActivity"
-            android:theme="@style/ParkItColorTheme"
-            android:label="@string/title_activity_add_vehicle" >
+            android:label="@string/title_activity_add_vehicle"
+            android:theme="@style/ParkItColorTheme" >
+        </activity>
+        <activity
+            android:name=".ui.SplashScreenActivity"
+            android:label="@string/title_activity_splash_screen" >
+
         </activity>
     </application>
 

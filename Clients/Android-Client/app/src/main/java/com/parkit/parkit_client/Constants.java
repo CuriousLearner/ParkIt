@@ -17,6 +17,7 @@ public class Constants {
     public static final String KEY_SHARED_PREFERENCES = "parkit";
     public static final String LOG_TAG = "Message : ";
     public static final String EXTRA_KEY_CUSTOMER = "currentCustomer";
+    public static final int SPLASH_DELAY_SECONDS = 2;
 
 
     // variable
