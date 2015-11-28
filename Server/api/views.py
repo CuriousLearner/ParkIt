@@ -12,6 +12,8 @@ from flask.ext.security.utils import encrypt_password
 from math import ceil
 import urllib2
 from json import loads
+from hashlib import sha1
+from mongoengine.queryset import NotUniqueError
 
 @app.route('/')
 def api_admin_panel_home():
@@ -36,6 +38,8 @@ def register_customer():
             c.address = json_request['address']
             c.contact_no = json_request['contact_no']
             c.driving_licence_link = json_request['driving_licence_link']
+            c.email = json_request['email']
+            c.password = json_request['password']
             vehicles = json_request['vehicles']
         except:
             return Response(json.dumps({"Message": "In-Complete form data"}), status=400,
@@ -58,7 +62,14 @@ def register_customer():
                                 content_type="application/json")
             v.save()
             c.vehicles.append(v)
-        c.save()
+        try:
+            c.save()
+        except NotUniqueError:
+            for vehicle in c.vehicles:
+                v = Vehicle.objects.get(vid=vehicle.vid)
+                v.delete()
+            return Response(json.dumps({"Message": "Customer with same e-mail already exists"}), status=400,
+                                content_type="application/json")
         ewallet_reg_url = "http://0.0.0.0:8000/login?x=1&name=" + str(c.cid) + "&password=" + str(c.QR_CODE_DATA)
         content = json.loads(urllib2.urlopen(ewallet_reg_url).read())
         return Response(json.dumps({"QR_CODE_DATA": c.QR_CODE_DATA}), status=200,
@@ -363,6 +374,7 @@ def show_parking_analysis(pid):
     total_cost = 0
     no_of_transactions = len(transactions)
     for transaction in transactions:
+        print(transaction)
         total_cost += transaction.total_cost
     return Response(json.dumps({"total_cost": total_cost, "no_of_transactions": no_of_transactions}), status=200,
                         content_type="application/json")
@@ -479,6 +491,33 @@ def recharge_wallet(QR_CODE_DATA, coupon_code):
                         content_type="application/json")
 
 
+@app.route('/api/customer/login', methods=['GET', 'POST'])
+@app.route('/api/customer/login/', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST':
+        token = request.headers.get('token')
+        if not token:
+            return Response(json.dumps({"Message": "Please supply proper credentials"}), status=400,
+                            content_type="application/json")
+        if not check_auth(token):
+            return Response(json.dumps({"Message": "Unauthorized access"}), status=401,
+                        content_type="application/json")
+        try:
+            json_request = json.loads(request.data)
+            email, password = json_request['email'], json_request['password']
+        except:
+            return Response(json.dumps({"Message": "Invalid credentials"}), status=401,
+                        content_type="application/json")
+        try:
+            SingleCustomer = Customer.objects.get(email=email, password=sha1(password).hexdigest())
+        except:
+            return Response(json.dumps({"Message": "No account found with that e-mail/pass combination"}), status=404,
+                        content_type="application/json")
+        result = create_single_customer_dict(SingleCustomer)
+        return Response(json.dumps(result, cls=PythonJSONEncoder), status=200,
+                        content_type="application/json")
+
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({"Error": "Not found"}), 404)
@@ -540,6 +579,7 @@ def create_single_customer_dict(SingleCustomer):
     d['driving_licence_link'] = SingleCustomer.driving_licence_link
     d['vehicles'] = SingleCustomer.vehicles
     d['transactions'] = SingleCustomer.transactions
+    d['QR_CODE_DATA'] = SingleCustomer.QR_CODE_DATA
     return d
 
 def create_parking_transactions_dict(parkingObjects):

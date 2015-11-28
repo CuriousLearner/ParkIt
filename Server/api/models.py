@@ -118,6 +118,8 @@ class Vehicle(db.Document):
 
 class Customer(db.Document):
     cid = db.IntField(unique=True)
+    email = db.StringField(max_length=255, unique=True)
+    password = db.StringField(max_length=500)
     first_name = db.StringField(max_length=100)
     last_name = db.StringField(max_length=100)
     contact_no = db.IntField(min_value=1000000000, max_value=9999999999)
@@ -156,6 +158,7 @@ class Customer(db.Document):
         if not self.created_on:
             self.created_on = datetime.now()
         self.modified_on = datetime.now()
+        self.password = hashlib.sha1(self.password).hexdigest()
         if not self.QR_CODE_DATA:
             self.QR_CODE_DATA = hashlib.sha1(str(self.cid) + str(self.created_on)).hexdigest()
         super(Customer, self).save(*args, **kwargs)
