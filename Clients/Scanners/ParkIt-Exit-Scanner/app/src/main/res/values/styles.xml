@@ -5,18 +5,38 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <!--ParkIt Dark Theme-->
+    <!--Green-White-->
     <!-- ParkIt Theme -->
-    <style name="ParkItExitScannerNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme">
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#558b2f</item>
-        <item name="colorAccent">#FFFFFF</item>
+    <!--<style name="ParkItExitScannerNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme">-->
+        <!--<item name="colorPrimary">#8bc34a</item>-->
+        <!--<item name="colorPrimaryDark">#558b2f</item>-->
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+    <!--</style>-->
+
+    <!--&lt;!&ndash; ParkIt Theme &ndash;&gt;-->
+    <!--<style name="ParkItColorTheme" parent="Base.Theme.AppCompat">-->
+        <!--<item name="colorPrimary">#8bc34a</item>-->
+        <!--<item name="colorPrimaryDark">#558b2f</item>-->
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+    <!--</style>-->
+
+
+    <!-- ParkIt Light Theme -->
+    <!--Blue Theme-->
+    <style name="ParkItExitScannerNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme.Light">
+        <item name="colorPrimary">#00BCD4</item>
+        <item name="colorPrimaryDark">#0097A7</item>
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+        <item name="colorAccent">#000000</item>
+        <item name="singleAccount">true</item>
     </style>
 
-    <!-- ParkIt Theme -->
-    <style name="ParkItColorTheme" parent="Base.Theme.AppCompat">
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#558b2f</item>
-        <item name="colorAccent">#FFFFFF</item>
+    <style name="ParkItColorTheme" parent="Base.Theme.AppCompat.Light">
+        <item name="colorPrimary">#00BCD4</item>
+        <item name="colorPrimaryDark">#0097A7</item>
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+        <item name="colorAccent">#000000</item>
     </style>
 
 

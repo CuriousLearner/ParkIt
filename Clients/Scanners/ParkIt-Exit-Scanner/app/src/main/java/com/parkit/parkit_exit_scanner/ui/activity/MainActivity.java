@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -19,32 +20,26 @@ import butterknife.OnClick;
 
 public class MainActivity extends ActionBarActivity {
 
+    public static boolean splashShown = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.getSupportActionBar().hide();
         ButterKnife.bind(this);
 
 
         // initialize rest client
         RestClient restClient = new RestClient();
 
-        SharedPreferences scannerConfiguration =
-                getSharedPreferences(Constants.SHARED_PREFS_KEY, 0);
-
-        String parkingLotID = scannerConfiguration
-                .getString(Constants.CONFIG_KEY_PARKING_LOT_ID, "");
-
-        if(!parkingLotID.equals("")) {
-            // scanner is configured
-
-            // open navigation drawer
-
-            Intent openNavigationDrawer = new Intent(this, ParkItExitScannerNavigationDrawer.class);
-            startActivity(openNavigationDrawer);
-
-            Utils.showShortToast("Welcome", this.getApplicationContext());
+        if(!splashShown) {
+            Log.d(Constants.LOG_TAG, "Showing splash screen");
+            Intent showSplashIntent = new Intent(this, SplashScreenActivity.class);
+            startActivity(showSplashIntent);
         }
+
+
     }
 
     @Override
@@ -83,5 +78,33 @@ public class MainActivity extends ActionBarActivity {
 
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if(!splashShown) {
+            splashShown = true;
+            return;
+        }
+
+        // check if configured
+        SharedPreferences scannerConfiguration =
+                getSharedPreferences(Constants.SHARED_PREFS_KEY, 0);
+
+        String parkingLotID = scannerConfiguration
+                .getString(Constants.CONFIG_KEY_PARKING_LOT_ID, "");
+
+        if(!parkingLotID.equals("")) {
+            // scanner is configured
+
+            // open navigation drawer
+
+            Intent openNavigationDrawer = new Intent(this, ParkItExitScannerNavigationDrawer.class);
+            startActivity(openNavigationDrawer);
+
+            Utils.showShortToast("Welcome", this.getApplicationContext());
+        }
+    }
 
 }

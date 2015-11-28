@@ -29,6 +29,7 @@
     <string name="label_api_host_address">API Host Address</string>
     <string name="hint_api_host_address">host address ex: 192.168.1.1 …</string>
     <string name="label_refresh_api">Refresh API Host Configuration</string>
+    <string name="title_activity_splash_screen">SplashScreenActivity</string>
 
 
 
