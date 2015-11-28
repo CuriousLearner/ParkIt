@@ -5,17 +5,49 @@
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- ParkIt Theme -->
-    <style name="ParkItNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme">
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#558b2f</item>
-        <item name="colorAccent">#FFFFFF</item>
+    <!-- ParkIt Dark Theme -->
+    <!--Green-White-->
+    <!--<style name="ParkItNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme">-->
+        <!--<item name="colorPrimary">#8bc34a</item>-->
+        <!--<item name="colorPrimaryDark">#558b2f</item>-->
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+    <!--</style>-->
+
+    <!--<style name="ParkItColorTheme" parent="Base.Theme.AppCompat">-->
+        <!--<item name="colorPrimary">#8bc34a</item>-->
+        <!--<item name="colorPrimaryDark">#558b2f</item>-->
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+    <!--</style>-->
+
+    <!--&lt;!&ndash;Blue-White&ndash;&gt;-->
+    <!--<style name="ParkItNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme">-->
+        <!--<item name="colorPrimary">#9FD7EF</item>-->
+        <!--<item name="colorPrimaryDark">#6F96A7</item>-->
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+    <!--</style>-->
+
+
+    <!--<style name="ParkItColorTheme" parent="Base.Theme.AppCompat">-->
+        <!--<item name="colorPrimary">#9FD7EF</item>-->
+        <!--<item name="colorPrimaryDark">#6F96A7</item>-->
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+    <!--</style>-->
+
+    <!-- ParkIt Light Theme -->
+    <!--Blue Theme-->
+    <style name="ParkItNavigationDrawerTheme" parent="MaterialNavigationDrawerTheme.Light">
+        <item name="colorPrimary">#00BCD4</item>
+        <item name="colorPrimaryDark">#0097A7</item>
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+        <item name="colorAccent">#000000</item>
+        <item name="singleAccount">true</item>
     </style>
 
-    <style name="ParkItColorTheme" parent="Base.Theme.AppCompat">
-        <item name="colorPrimary">#8bc34a</item>
-        <item name="colorPrimaryDark">#558b2f</item>
-        <item name="colorAccent">#FFFFFF</item>
+    <style name="ParkItColorTheme" parent="Base.Theme.AppCompat.Light">
+        <item name="colorPrimary">#00BCD4</item>
+        <item name="colorPrimaryDark">#0097A7</item>
+        <!--<item name="colorAccent">#FFFFFF</item>-->
+        <item name="colorAccent">#000000</item>
     </style>
 
 </resources>

@@ -190,12 +190,14 @@
                 <Spinner
                     android:id="@+id/spin_vehicle_type"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:hint="@string/hint_vehicle_number"
                     android:layout_weight="20"
                     android:paddingLeft="10dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:inputType="text"
-                    android:background="@color/abc_input_method_navigation_guard"
+                    android:background="@drawable/card_border_background"
                     />
             </LinearLayout>
 

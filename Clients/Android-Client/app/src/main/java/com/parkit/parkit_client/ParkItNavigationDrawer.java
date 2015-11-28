@@ -25,8 +25,8 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
     @Override
     public void init(Bundle savedInstanceState) {
         MaterialSection accountSection  = newSection(
-                "Account",
-                new IconDrawable(this, Iconify.IconValue.fa_money),
+                "My Account",
+                new IconDrawable(this, Iconify.IconValue.fa_cogs),
                 new AccountFragment()
         );
 
@@ -61,7 +61,6 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
                 new ParkItAPIHostConfigFragment()
         );
 
-        this.addSection(accountSection);
 
         this.addSection(qrCodeGenSection);
 
@@ -72,6 +71,8 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
         this.addSection(myVehiclesSection);
 
         this.addSection(dynamicAPIHostConfigSection);
+
+        this.addSection(accountSection);
 
         this.setDefaultSectionLoaded(0);
         disableLearningPattern();
