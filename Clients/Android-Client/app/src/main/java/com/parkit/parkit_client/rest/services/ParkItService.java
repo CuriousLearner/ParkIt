@@ -3,7 +3,9 @@ package com.parkit.parkit_client.rest.services;
 
 import com.parkit.parkit_client.rest.models.parkit.Balance;
 import com.parkit.parkit_client.rest.models.parkit.Customer;
+import com.parkit.parkit_client.rest.models.parkit.CustomerLoginResponse;
 import com.parkit.parkit_client.rest.models.parkit.CustomerModificationResponse;
+import com.parkit.parkit_client.rest.models.parkit.LoginCredentials;
 import com.parkit.parkit_client.rest.models.parkit.ParkItError;
 import com.parkit.parkit_client.rest.models.parkit.QRCodeResponse;
 
@@ -62,4 +64,13 @@ public interface ParkItService {
             @Path("coupon_code") String couponCode,
             Callback<ParkItError> cb
     );
+
+    @POST("/api/customer/login/")
+    public void login(
+            @Header("token") String token,
+            @Body LoginCredentials lc,
+            Callback<CustomerLoginResponse> cb
+    );
+
+
 }
