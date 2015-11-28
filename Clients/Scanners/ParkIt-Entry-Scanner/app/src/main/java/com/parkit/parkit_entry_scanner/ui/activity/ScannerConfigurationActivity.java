@@ -23,7 +23,7 @@ import butterknife.OnClick;
 
 public class ScannerConfigurationActivity extends ActionBarActivity {
 
-    private String[] vehicleTypes;
+    private String[] vehicleTypesView, vehicleTypesModel;
     private String vehicleType;
 
     @Bind(R.id.edit_parking_lot_id)
@@ -75,6 +75,31 @@ public class ScannerConfigurationActivity extends ActionBarActivity {
             return;
         }
 
+
+        String vehicleTypeCode = "";
+
+        String selectedVehicleTypeView = vehicleTypeSpinner.getSelectedItem().toString();
+
+        // initialize view and model values
+        String  twoWheelerModel = vehicleTypesModel[0],
+                fourWheelerModel = vehicleTypesModel[1],
+                heavyVehicleModel = vehicleTypesModel[2],
+                twoWheelerView = vehicleTypesView[0],
+                fourWheelerView = vehicleTypesView[1],
+                heavyVehicleView = vehicleTypesView[2];
+
+        if(selectedVehicleTypeView.equals(twoWheelerView)) {
+            vehicleTypeCode = twoWheelerModel;
+        } else if(selectedVehicleTypeView.equals(fourWheelerView)) {
+            vehicleTypeCode = fourWheelerModel;
+        } else if(selectedVehicleTypeView.equals(heavyVehicleView)) {
+            vehicleTypeCode = heavyVehicleModel;
+        }
+
+        vehicleType = vehicleTypeCode;
+
+
+
         String willSaveLog = "Parking Lot ID : "+parkingLotIdEdit.getText().toString() +
                 "\nVehicle Type : "+vehicleType;
 
@@ -108,13 +133,17 @@ public class ScannerConfigurationActivity extends ActionBarActivity {
 
 
     private void setUpVehicleTypeSpinner() {
-        vehicleTypes = getResources().getStringArray(R.array.vehicle_types);
-        ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(
-                this.getApplicationContext(),
-                android.R.layout.simple_spinner_item,
-                vehicleTypes
-        );
-        vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vehicleTypesView = getResources().getStringArray(R.array.vehicle_type_views);
+        vehicleTypesModel = getResources().getStringArray(R.array.vehicle_type_models);;
+//        ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(
+//                this.getApplicationContext(),
+//                android.R.layout.simple_spinner_item,
+//                vehicleTypes
+//        );
+//        vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(this,
+                R.layout.custom_simple_spinner_item, R.id.text_vehicle_type, vehicleTypesView);
+
         vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
         vehicleTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

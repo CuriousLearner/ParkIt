@@ -13,11 +13,17 @@
     <string name="label_vehicle_type">Vehicle Type</string>
     <string name="label_save_config">Save Configuration</string>
 
-    <string-array name="vehicle_types">
+    <array name="vehicle_type_models">
         <item>two_wheeler</item>
         <item>four_wheeler</item>
         <item>heavy_vehicle</item>
-    </string-array>
+    </array>
+
+    <array name="vehicle_type_views">
+        <item>Two wheeler</item>
+        <item>Four wheeler</item>
+        <item>Heavy vehicle</item>
+    </array>
     <string name="title_activity_configuration_login">Pass Key Verification</string>
     <string name="label_config_login_pass">Configuration Pass Key</string>
     <string name="hint_config_login_pass">Configuration Pass Key …</string>
