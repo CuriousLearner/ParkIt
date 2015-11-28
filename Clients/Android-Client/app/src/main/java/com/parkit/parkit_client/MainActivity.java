@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.parkit.parkit_client.rest.RestClient;
+import com.parkit.parkit_client.ui.LoginActivity;
 import com.parkit.parkit_client.ui.RegistrationActivity;
 import com.parkit.parkit_client.ui.SplashScreenActivity;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        this.getSupportActionBar().hide();
         ButterKnife.bind(this);
         // init rest client
         RestClient restClient = new RestClient();
@@ -91,6 +93,12 @@ public class MainActivity extends AppCompatActivity {
     @OnClick(R.id.btn_register)
     public void openRegistrationActivity() {
         Intent openRegistrationActivity = new Intent(this, RegistrationActivity.class);
+        startActivity(openRegistrationActivity);
+    }
+
+    @OnClick(R.id.btn_login)
+    public void openLoginActivity() {
+        Intent openRegistrationActivity = new Intent(this, LoginActivity.class);
         startActivity(openRegistrationActivity);
     }
 

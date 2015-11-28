@@ -85,7 +85,7 @@ public class RegistrationActivity extends ActionBarActivity {
     Spinner vehicleTypeSpinner;
 
 
-    private String[] vehicleTypes;
+    private String[] vehicleTypesView, vehicleTypesModel;
     private String vehicleType;
     private Uri licenseImageUri, rcImageUri;
     private String licenseImageLink, rcImageLink;
@@ -143,18 +143,26 @@ public class RegistrationActivity extends ActionBarActivity {
     }
 
     public void setupVehicleTypeSpinner() {
-        vehicleTypes = getResources().getStringArray(R.array.vehicle_types);
-        ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(
-                this.getApplicationContext(),
-                android.R.layout.simple_spinner_item,
-                vehicleTypes
-        );
-        vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        vehicleTypes = getResources().getStringArray(R.array.vehicle_types);
+        vehicleTypesView = getResources().getStringArray(R.array.vehicle_types_view);
+        vehicleTypesModel = getResources().getStringArray(R.array.vehicle_types_model);
+
+
+
+//        ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(
+//                this.getApplicationContext(),
+//                android.R.layout.simple_spinner_item,
+//                vehicleTypes
+//        );
+        ArrayAdapter<String> vehicleTypeAdapter = new ArrayAdapter<String>(this,
+                R.layout.custom_simple_spinner_item, R.id.text_vehicle_type, vehicleTypesView);
+//        vehicleTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeSpinner.setAdapter(vehicleTypeAdapter);
         vehicleTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 vehicleType = (String) parent.getItemAtPosition(position);
+
             }
 
             @Override
@@ -522,8 +530,36 @@ public class RegistrationActivity extends ActionBarActivity {
     private void registerOnParkIt() {
 
 //        rcImageLink = "https://www.google.com";
+
+
+        // calculate vehicle type code
+
+        String vehicleTypeCode = "";
+
+        String selectedVehicleTypeView = vehicleTypeSpinner.getSelectedItem().toString();
+
+        // initialize view and model values
+        String  twoWheelerModel = vehicleTypesModel[0],
+                fourWheelerModel = vehicleTypesModel[1],
+                heavyVehicleModel = vehicleTypesModel[2],
+                twoWheelerView = vehicleTypesView[0],
+                fourWheelerView = vehicleTypesView[1],
+                heavyVehicleView = vehicleTypesView[2];
+
+        if(selectedVehicleTypeView.equals(twoWheelerView)) {
+            vehicleTypeCode = twoWheelerModel;
+        } else if(selectedVehicleTypeView.equals(fourWheelerView)) {
+            vehicleTypeCode = fourWheelerModel;
+        } else if(selectedVehicleTypeView.equals(heavyVehicleView)) {
+            vehicleTypeCode = heavyVehicleModel;
+        }
+
+        Log.d(Constants.LOG_TAG, "Vehicle type code : "+vehicleTypeCode);
+
+
         Vehicle vehicle = new Vehicle(
-                vehicleTypeSpinner.getSelectedItem().toString(),
+//                vehicleTypeSpinner.getSelectedItem().toString(),
+                vehicleTypeCode,
                 vehicleNumberEdit.getText().toString(),
                 rcImageLink
         );

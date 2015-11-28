@@ -3,6 +3,8 @@ package com.parkit.parkit_client.rest.models.parkit;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.parkit.parkit_client.Constants;
+
 import java.util.ArrayList;
 import java.util.List;
 

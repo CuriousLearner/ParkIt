@@ -42,7 +42,12 @@
         <activity
             android:name=".ui.SplashScreenActivity"
             android:label="@string/title_activity_splash_screen" >
-
+        </activity>
+        <activity
+            android:name=".ui.LoginActivity"
+            android:label="@string/title_activity_login"
+            android:theme="@style/ParkItColorTheme"
+            >
         </activity>
     </application>
 

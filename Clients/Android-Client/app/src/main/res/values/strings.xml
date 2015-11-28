@@ -44,10 +44,15 @@
 
 
 
-    <string-array name="vehicle_types">
+    <string-array name="vehicle_types_model">
         <item>two_wheeler</item>
         <item>four_wheeler</item>
         <item>heavy_vehicle</item>
+    </string-array>
+    <string-array name="vehicle_types_view">
+        <item>Two wheeler</item>
+        <item>Four wheeler</item>
+        <item>Heavy vehicle</item>
     </string-array>
     <string name="title_activity_customer_details_update">Update Account Information</string>
     <string name="label_update_details_btn">Update</string>
@@ -61,6 +66,12 @@
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
     <string name="placeholder">---</string>
     <string name="label_address_multiline">Address : </string>
+    <string name="label_login">Login</string>
+    <string name="title_activity_login">Log Into Your ParkIt Account</string>
+    <string name="label_email_id">Email ID</string>
+    <string name="hint_email_id">Registered email ID. Ex: abc@xyz.pqr</string>
+    <string name="label_password">Password</string>
+    <string name="hint_password">Password …</string>
 
 
 

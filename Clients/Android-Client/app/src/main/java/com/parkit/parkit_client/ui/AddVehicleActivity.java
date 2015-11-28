@@ -53,7 +53,7 @@ public class AddVehicleActivity extends ActionBarActivity {
 
 
     private Uri rcImageUri;
-    private String[] vehicleTypes;
+    private String[] vehicleTypesView, vehicleTypesModel;
     private String vehicleType, rcImageLink;
     private ProgressDialog uploadProgress;
     private Customer currentCustomer, updatedCustomer;
@@ -296,13 +296,17 @@ public class AddVehicleActivity extends ActionBarActivity {
 
 
     public void setupVehicleTypeSpinner() {
-        vehicleTypes = this.getResources().getStringArray(R.array.vehicle_types);
-        ArrayAdapter<String> vehicleTypesAdapter = new ArrayAdapter<String>(
-                this.getApplicationContext(),
-                android.R.layout.simple_spinner_item,
-                vehicleTypes
-        );
-        vehicleTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        vehicleTypesView = this.getResources().getStringArray(R.array.vehicle_types_view);
+        vehicleTypesModel = getResources().getStringArray(R.array.vehicle_types_model);
+
+//        ArrayAdapter<String> vehicleTypesAdapter = new ArrayAdapter<String>(
+//                this.getApplicationContext(),
+//                android.R.layout.simple_spinner_item,
+//                vehicleTypes
+//        );
+        ArrayAdapter<String> vehicleTypesAdapter = new ArrayAdapter<String>(this,
+                R.layout.custom_simple_spinner_item, R.id.text_vehicle_type, vehicleTypesView);
+//        vehicleTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         vehicleTypeSpinner.setAdapter(vehicleTypesAdapter);
         vehicleTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -319,6 +323,9 @@ public class AddVehicleActivity extends ActionBarActivity {
     }
 
     public void uploadRCImage() {
+
+        // refresh rest client
+        RestClient restClient = new RestClient();
 
         if(rcImageUri == null) {
             Utils.showShortToast(
@@ -387,8 +394,34 @@ public class AddVehicleActivity extends ActionBarActivity {
     private void modifyCustomerAccountOnParkIt() {
 
         updatedCustomer = currentCustomer;
+        // calculate vehicleTypeCode
+
+        String vehicleTypeCode = "";
+
+        String selectedVehicleTypeView = vehicleTypeSpinner.getSelectedItem().toString();
+
+        // initialize view and model values
+        String  twoWheelerModel = vehicleTypesModel[0],
+                fourWheelerModel = vehicleTypesModel[1],
+                heavyVehicleModel = vehicleTypesModel[2],
+                twoWheelerView = vehicleTypesView[0],
+                fourWheelerView = vehicleTypesView[1],
+                heavyVehicleView = vehicleTypesView[2];
+
+        if(selectedVehicleTypeView.equals(twoWheelerView)) {
+            vehicleTypeCode = twoWheelerModel;
+        } else if(selectedVehicleTypeView.equals(fourWheelerView)) {
+            vehicleTypeCode = fourWheelerModel;
+        } else if(selectedVehicleTypeView.equals(heavyVehicleView)) {
+            vehicleTypeCode = heavyVehicleModel;
+        }
+
+        Log.d(Constants.LOG_TAG, "Vehicle type code : "+vehicleTypeCode);
+
+
+
         Vehicle newVehicle = new Vehicle(
-                vehicleType,
+                vehicleTypeCode,
                 vehicleNumberEdit.getText().toString(),
                 rcImageLink
         );
