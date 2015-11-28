@@ -78,7 +78,7 @@ def register_customer():
 @app.route('/api/customer/')
 def get_customer():
     '''
-    returns all the events with GET request
+    returns all the customers with GET request
     '''
     token = request.headers.get('token')
     if not token:
@@ -97,7 +97,7 @@ def get_customer():
 @app.route('/api/customer/<QR_CODE_DATA>/')
 def get_single_customer(QR_CODE_DATA):
     '''
-    returns all the events with GET request
+    GET single customer with QR_CODE_DATA
     '''
     token = request.headers.get('token')
     if not token:
@@ -580,6 +580,7 @@ def create_single_customer_dict(SingleCustomer):
     d['vehicles'] = SingleCustomer.vehicles
     d['transactions'] = SingleCustomer.transactions
     d['QR_CODE_DATA'] = SingleCustomer.QR_CODE_DATA
+    d['email'] = SingleCustomer.email
     return d
 
 def create_parking_transactions_dict(parkingObjects):
