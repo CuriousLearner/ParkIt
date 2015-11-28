@@ -1,6 +1,7 @@
 package com.parkit.parkit_client.ui;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -27,6 +28,7 @@ import com.google.zxing.qrcode.encoder.QRCode;
 import com.parkit.parkit_client.Constants;
 import com.parkit.parkit_client.MainActivity;
 import com.parkit.parkit_client.R;
+import com.parkit.parkit_client.Utils;
 import com.parkit.parkit_client.rest.RestClient;
 import com.parkit.parkit_client.rest.models.imgur.ImgurImageResponse;
 import com.parkit.parkit_client.rest.models.parkit.Customer;
@@ -39,10 +41,13 @@ import java.io.FileNotFoundException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import it.neokree.materialnavigationdrawer.elements.MaterialSection;
 import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
@@ -53,7 +58,6 @@ public class RegistrationActivity extends ActionBarActivity {
     @Bind(R.id.edit_first_name)
     EditText firstNameEdit;
 
-
     @Bind(R.id.edit_last_name)
     EditText lastNameEdit;
 
@@ -62,6 +66,12 @@ public class RegistrationActivity extends ActionBarActivity {
 
     @Bind(R.id.edit_address)
     EditText addressEdit;
+
+    @Bind(R.id.edit_email_id)
+    EditText emailEdit;
+
+    @Bind(R.id.edit_password)
+    EditText passwordEdit;
 
     @Bind(R.id.license_image)
     ImageView licenseImage;
@@ -272,9 +282,9 @@ public class RegistrationActivity extends ActionBarActivity {
     @OnClick(R.id.btn_register)
     public void register() {
 
-
-
-        uploadLicenseAndRCImages();
+        if(isInputValid()) {
+            uploadLicenseAndRCImages();
+        }
 
     }
 
@@ -311,7 +321,7 @@ public class RegistrationActivity extends ActionBarActivity {
                                     "image/jpg",
                                     new File(rcImageUri.getPath())
                             );
-                            // uplooad rc image
+                            // upload rc image
                             RestClient.imgurService.postImage(
                                     ImgurService.CLIENT_ID,
                                     "title-test-" + System.currentTimeMillis(),
@@ -575,6 +585,8 @@ public class RegistrationActivity extends ActionBarActivity {
                 lastNameEdit.getText().toString(),
                 contactNumberEdit.getText().toString(),
                 addressEdit.getText().toString(),
+                emailEdit.getText().toString(),
+                passwordEdit.getText().toString(),
                 licenseImageLink,
                 vehicles
         );
@@ -607,6 +619,10 @@ public class RegistrationActivity extends ActionBarActivity {
                             prefEditor.putString(
                                     Constants.CONFIG_KEY_LAST_NAME,
                                     customer.last_name);
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_EMAIL,
+                                    customer.email
+                            );
                             prefEditor.putString(
                                     Constants.CONFIG_KEY_LICENSE_LINK,
                                     customer.driving_licence_link);
@@ -687,10 +703,68 @@ public class RegistrationActivity extends ActionBarActivity {
 
     }
 
+    private boolean isInputValid() {
+
+        Context ctx = this.getApplicationContext();
 
 
+        // check for empty fields
+        if(!((!firstNameEdit.getText().toString().equals("")) &&
+            (!lastNameEdit.getText().toString().equals("")) &&
+            (!contactNumberEdit.getText().toString().equals("")) &&
+            (!addressEdit.getText().toString().equals("")) &&
+            (!emailEdit.getText().toString().equals("")) &&
+            (!passwordEdit.getText().toString().equals("")) &&
+            licenseImageUri != null &&
+            rcImageUri != null &&
+            (!vehicleTypeSpinner.getSelectedItem().toString().equals("")) &&
+            (!vehicleNumberEdit.getText().toString().equals(""))
+        )){
+            // something is not filled
+            Utils.showShortToast("Please fill all fields !!!", ctx);
+            return false;
+        } else {
 
+            // validate contact number
+            if (contactNumberEdit.getText().toString().length() != 10) {
+                Utils.showShortToast("Invalid contact number !!!", ctx);
+                return false;
+            } else {
 
+                // validate email id
+                Pattern emailRegexPattern = Pattern.compile(Constants.EMAIL_REGEX_RFC_5322);
+                Matcher emailMatcher = emailRegexPattern.matcher(emailEdit.getText().toString());
+                if(!emailMatcher.matches()) {
+                    Utils.showShortToast("Invalid email address !!!", ctx);
+                    return false;
+                } else {
 
+                    // validate password
+                    if(passwordEdit.getText().toString().length() < 8) {
+                        Utils.showShortToast(
+                                "Your choice for a password is too short, " +
+                                "\nMinimum password length is 8.", ctx);
+                        return false;
+                    } else {
 
+                        // validate license plate number
+                        // @TODO:Give a suitable license plate number hint.
+                        Pattern licensePlateNumberPattern =
+                                Pattern.compile(Constants.LICENSE_PLATE_NUMBER_REGEX);
+                        Matcher licensePlateNumberMatcher= licensePlateNumberPattern
+                                .matcher(vehicleNumberEdit.getText().toString());
+
+                        if(!licensePlateNumberMatcher.matches()) {
+                            Utils.showShortToast("Invalid license plate number", ctx);
+                            return false;
+                        } else {
+                            // all validations succeeded
+                            Log.d(Constants.LOG_TAG, "All validations passed");
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

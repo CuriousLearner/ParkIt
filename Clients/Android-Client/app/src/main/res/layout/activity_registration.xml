@@ -13,6 +13,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!--First Name-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -39,6 +41,7 @@
                     />
             </LinearLayout>
 
+            <!--Last Name-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,6 +67,7 @@
                     />
             </LinearLayout>
 
+            <!--Contact Number-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -90,6 +94,7 @@
                     />
             </LinearLayout>
 
+            <!--Address-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -116,14 +121,68 @@
                     />
             </LinearLayout>
 
+            <!--Email ID-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100"
+                android:paddingTop="15dp">
+                <TextView
+                    android:id="@+id/label_email_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/label_email_id"
+                    android:labelFor="@+id/edit_email_id"
+                    android:layout_marginLeft="10dp"
+                    android:layout_weight="80"/>
+                <EditText
+                    android:id="@+id/edit_email_id"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_email_id"
+                    android:layout_weight="20"
+                    android:paddingLeft="10dp"
+                    android:inputType="textEmailAddress"
+                    />
+            </LinearLayout>
+
+            <!--Password-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:weightSum="100"
+                android:paddingTop="15dp">
+                <TextView
+                    android:id="@+id/label_pass"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/label_choose_pass"
+                    android:labelFor="@+id/edit_password"
+                    android:paddingLeft="10dp"
+                    android:layout_weight="80"/>
+                <EditText
+                    android:id="@+id/edit_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="@string/hint_choose_pass"
+                    android:layout_weight="20"
+                    android:paddingLeft="10dp"
+                    android:inputType="textPassword"
+                    />
+            </LinearLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/label_license"
                 android:textSize="18sp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="10dp"/>
 
+            <!--Driving License-->
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -146,7 +205,7 @@
 
             </LinearLayout>
 
-
+            <!--Vehicle's License Plate Number-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -172,7 +231,7 @@
                     />
             </LinearLayout>
 
-
+            <!--Vehicle Type-->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -202,10 +261,6 @@
             </LinearLayout>
 
 
-
-
-
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -213,6 +268,7 @@
                 android:textSize="18sp"
                 android:layout_marginLeft="10dp"/>
 
+            <!--Vehicle RC-->
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -237,7 +293,7 @@
             </LinearLayout>
 
 
-
+            <!--Register-->
             <Button
                 android:id="@+id/btn_register"
                 android:layout_width="250dp"

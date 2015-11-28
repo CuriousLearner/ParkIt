@@ -67,6 +67,9 @@ public class UpdateInformationFragment extends Fragment {
     @Bind(R.id.text_address)
     TextView addressText;
 
+    @Bind(R.id.text_email_id)
+    TextView emailIDText;
+
     @Bind(R.id.image_view_license)
     ImageView licenseImageView;
 
@@ -156,7 +159,9 @@ public class UpdateInformationFragment extends Fragment {
         firstNameText.setText(currentCustomer.first_name);
         lastNameText.setText(currentCustomer.last_name);
         contactNumberText.setText(currentCustomer.contact_no);
+        emailIDText.setText(currentCustomer.email);
         addressText.setText(currentCustomer.address);
+
 
         // load license image
         Picasso.with(this.getActivity())

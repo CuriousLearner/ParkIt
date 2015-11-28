@@ -14,7 +14,7 @@ import java.util.List;
 public class Customer implements Parcelable{
 
 
-    public String first_name, last_name, contact_no, address, driving_licence_link;
+    public String first_name, last_name, contact_no, address, driving_licence_link, email, password;
 
     public ArrayList<Vehicle> vehicles;
 
@@ -24,12 +24,16 @@ public class Customer implements Parcelable{
             String lastName,
             String contactNumber,
             String address,
+            String email,
+            String password,
             String driverLicenseLink,
             ArrayList<Vehicle> vehicles) {
         this.first_name = fistName;
         this.last_name = lastName;
         this.contact_no = contactNumber;
         this.address = address;
+        this.email = email;
+        this.password = password;
         this.driving_licence_link = driverLicenseLink;
         this.vehicles = vehicles;
     }
@@ -41,6 +45,8 @@ public class Customer implements Parcelable{
                 "\nLast Name : " + this.last_name +
                 "\nContact Number : " + this.contact_no +
                 "\nAddress : " + this.address +
+                "\nEmail ID : " + this.email +
+                "\nPassword : " + this.password +
                 "\nDriving License Link : " + this.driving_licence_link +
                 "\nVehicles : ";
         if (this.vehicles != null) {
@@ -65,6 +71,7 @@ public class Customer implements Parcelable{
                 "",
                 "",
                 "",
+                "",
                 ""
         };
         in.readStringArray(personalDetailsArray);
@@ -75,7 +82,8 @@ public class Customer implements Parcelable{
         this.last_name = personalDetailsArray[1];
         this.contact_no = personalDetailsArray[2];
         this.address = personalDetailsArray[3];
-        this.driving_licence_link = personalDetailsArray[4];
+        this.email = personalDetailsArray[4];
+        this.driving_licence_link = personalDetailsArray[5];
     }
 
 
@@ -91,6 +99,7 @@ public class Customer implements Parcelable{
             this.last_name,
             this.contact_no,
             this.address,
+            this.email,
             this.driving_licence_link
         };
 

@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebBackForwardList;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +54,9 @@ public class AccountFragment extends Fragment {
     @Bind(R.id.text_address)
     TextView addressText;
 
+    @Bind(R.id.text_email_id)
+    TextView emailIDText;
+
 
     @Nullable
     @Override
@@ -77,6 +81,7 @@ public class AccountFragment extends Fragment {
         String firstName = accountDetails.getString(Constants.CONFIG_KEY_FIRST_NAME, "");
         String lastName = accountDetails.getString(Constants.CONFIG_KEY_LAST_NAME, "");
         String contactNumber = accountDetails.getString(Constants.CONFIG_KEY_CONTACT_NO, "");
+        String emailID = accountDetails.getString(Constants.CONFIG_KEY_EMAIL, "");
         String address = accountDetails.getString(Constants.CONFIG_KEY_ADDRESS, "");
 
         if(!firstName.equals("")) {
@@ -84,6 +89,7 @@ public class AccountFragment extends Fragment {
             firstNameText.setText(firstName);
             lastNameText.setText(lastName);
             contactNumberText.setText(contactNumber);
+            emailIDText.setText(emailID);
             addressText.setText(address);
         } else {
             Log.d(Constants.LOG_TAG, "Hash values not set");
@@ -128,6 +134,10 @@ public class AccountFragment extends Fragment {
                             prefEditor.putString(
                                     Constants.CONFIG_KEY_CONTACT_NO,
                                     customer.contact_no
+                            );
+                            prefEditor.putString(
+                                    Constants.CONFIG_KEY_EMAIL,
+                                    customer.email
                             );
                             prefEditor.putString(
                                     Constants.CONFIG_KEY_ADDRESS,

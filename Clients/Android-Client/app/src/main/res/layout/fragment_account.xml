@@ -106,6 +106,27 @@
                     android:textSize="20sp"
                     />
             </LinearLayout>
+            <!--Email ID-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <TextView
+                    android:layout_width="150dp"
+                    android:layout_height="50dp"
+                    android:text="@string/label_email_id"
+                    android:textSize="20sp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/text_email_id"
+                    android:text="@string/placeholder"
+                    android:layout_marginLeft="7.5dp"
+                    android:textSize="20sp"
+                    />
+            </LinearLayout>
             <!--Address-->
             <LinearLayout
                 android:layout_width="match_parent"

@@ -69,9 +69,12 @@
     <string name="label_login">Login</string>
     <string name="title_activity_login">Log Into Your ParkIt Account</string>
     <string name="label_email_id">Email ID</string>
-    <string name="hint_email_id">Registered email ID. Ex: abc@xyz.pqr</string>
+    <string name="hint_registered_email_id">Registered email ID. Ex: abc@xyz.pqr</string>
     <string name="label_password">Password</string>
     <string name="hint_password">Password …</string>
+    <string name="hint_email_id">Email ID. Ex: abc@xyz.pqr</string>
+    <string name="label_choose_pass">Choose a password</string>
+    <string name="hint_choose_pass">Must be at least 8 characters</string>
 
 
 

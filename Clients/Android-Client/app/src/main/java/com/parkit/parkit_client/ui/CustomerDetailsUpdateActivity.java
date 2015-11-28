@@ -48,7 +48,7 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
 
     private Customer currentCustomer, updatedCustomer;
     private Uri licenseImageUri = null;
-    private String updatedlicenseImageLink;
+    private String updatedLicenseImageLink;
     private ProgressDialog uploadProgress;
 
     // view bindings
@@ -61,6 +61,9 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
 
     @Bind(R.id.edit_contact_number)
     EditText contactNumberEdit;
+
+    @Bind(R.id.edit_email_id)
+    EditText emailIDEdit;
 
     @Bind(R.id.edit_address)
     EditText addressEdit;
@@ -118,6 +121,7 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
         firstNameEdit.setText(customer.first_name);
         lastNameEdit.setText(customer.last_name);
         contactNumberEdit.setText(customer.contact_no);
+        emailIDEdit.setText(customer.email);
         addressEdit.setText(customer.address);
         Picasso.with(this)
                 .load(customer.driving_licence_link)
@@ -145,6 +149,8 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
                     lastNameEdit.getText().toString(),
                     contactNumberEdit.getText().toString(),
                     addressEdit.getText().toString(),
+                    emailIDEdit.getText().toString(),
+                    null,
                     currentCustomer.driving_licence_link,
                     currentCustomer.vehicles
             );
@@ -192,12 +198,12 @@ public class CustomerDetailsUpdateActivity extends ActionBarActivity {
                                 Log.d(Constants.LOG_TAG,
                                         "License Image uploaded successfully \nLink : "
                                                 + imgurImageResponse.data.link);
-                                updatedlicenseImageLink = imgurImageResponse.data.link;
+                                updatedLicenseImageLink = imgurImageResponse.data.link;
 
                                 Log.d(Constants.LOG_TAG, "New license link has been set, "+
                                                 "new link : " + updatedCustomer.driving_licence_link
                                 );
-                                updatedCustomer.driving_licence_link = updatedlicenseImageLink;
+                                updatedCustomer.driving_licence_link = updatedLicenseImageLink;
 
                             } else {
                                 uploadProgress.dismiss();
