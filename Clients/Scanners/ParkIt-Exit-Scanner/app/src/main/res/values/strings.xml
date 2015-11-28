@@ -20,10 +20,16 @@
     <string name="label_vehicle_type">Vehicle Type</string>
     <string name="label_clear_config">Clear Scanner Configuration</string>
 
-    <array name="vehicle_types">
+    <array name="vehicle_type_models">
         <item>two_wheeler</item>
         <item>four_wheeler</item>
         <item>heavy_vehicle</item>
+    </array>
+
+    <array name="vehicle_type_views">
+        <item>Two wheeler</item>
+        <item>Four wheeler</item>
+        <item>Heavy vehicle</item>
     </array>
 
     <string name="label_api_host_address">API Host Address</string>

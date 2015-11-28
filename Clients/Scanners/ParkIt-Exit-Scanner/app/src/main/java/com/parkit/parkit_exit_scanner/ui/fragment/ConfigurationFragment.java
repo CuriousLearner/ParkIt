@@ -56,8 +56,39 @@ public class ConfigurationFragment extends Fragment {
         String parkingLotID = scannerConfig
                 .getString(Constants.CONFIG_KEY_PARKING_LOT_ID, "not configured");
 
+
         String vehicleType = scannerConfig
                 .getString(Constants.CONFIG_KEY_VEHICLE_TYPE, "not configured");
+
+        if(!vehicleType.equals("not configured")) {
+            String vehicleTypeViewRep = vehicleType;
+
+            String selectedVehicleTypeModel = vehicleType;
+
+
+
+            // initialize view and model values
+
+            String[] vehicleTypesView = getResources().getStringArray(R.array.vehicle_type_views);
+            String[] vehicleTypesModel = getResources().getStringArray(R.array.vehicle_type_models);
+
+            String  twoWheelerModel = vehicleTypesModel[0],
+                    fourWheelerModel = vehicleTypesModel[1],
+                    heavyVehicleModel = vehicleTypesModel[2],
+                    twoWheelerView = vehicleTypesView[0],
+                    fourWheelerView = vehicleTypesView[1],
+                    heavyVehicleView = vehicleTypesView[2];
+
+            if(selectedVehicleTypeModel.equals(twoWheelerModel)) {
+                vehicleTypeViewRep = twoWheelerView;
+            } else if(selectedVehicleTypeModel.equals(fourWheelerModel)) {
+                vehicleTypeViewRep = fourWheelerView;
+            } else if(selectedVehicleTypeModel.equals(heavyVehicleModel)) {
+                vehicleTypeViewRep = heavyVehicleView;
+            }
+
+            vehicleType = vehicleTypeViewRep;
+        }
 
         parkingLotIDText.setText(
                 "Parking Lot ID : " + parkingLotID

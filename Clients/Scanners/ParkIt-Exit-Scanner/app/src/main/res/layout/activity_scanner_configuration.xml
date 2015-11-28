@@ -32,6 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/spinner_vehicle_type"
+        android:background="@drawable/custom_card_border_background"
         >
     </Spinner>
 
