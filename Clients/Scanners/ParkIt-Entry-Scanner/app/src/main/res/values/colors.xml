@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Cyan-Set-->
+    <color name="parkit_blue_normal">#00BCD4</color>
+    <color name="parkit_blue_focused">#B2EBF2</color>
+    <color name="parkit_blue_selected">#e0f7f9</color>
+</resources>

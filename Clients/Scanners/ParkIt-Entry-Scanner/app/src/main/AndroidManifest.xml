@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.parkit.parkit_entry_scanner" >
 
-
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -34,6 +33,10 @@
             android:name=".ui.activity.ConfigurationLogin"
             android:label="@string/title_activity_configuration_login"
             android:theme="@style/ParkItColorTheme" >
+        </activity>
+        <activity
+            android:name=".ui.activity.SplashScreenActivity"
+            android:label="@string/title_activity_splash_screen" >
         </activity>
     </application>
 

@@ -13,6 +13,8 @@ public class Constants {
     public static final String PARKIT_AUTH_TOKEN =
             "WyIxIiwiY2UwZWY0MDFjYTA3MmJlODcyODkzYjYxOGQzZjk4YzUiXQ.B5e5Sg.qcsDcaMgiRqx21YTC0OwwnihINM";
 
+    public static final int SPLASH_DELAY_SECONDS = 2;
+
 
     // variable
     public static String PARKIT_API_HOST_ADDRESS = "http://192.168.1.4:5000";
