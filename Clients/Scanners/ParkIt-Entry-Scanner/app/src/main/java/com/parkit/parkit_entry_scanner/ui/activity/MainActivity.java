@@ -34,11 +34,9 @@ public class MainActivity extends ActionBarActivity {
 
 
         if(!splashShown) {
-            splashShown = true;
             Intent showSplashScreenIntent = new Intent(this, SplashScreenActivity.class);
             startActivity(showSplashScreenIntent);
             Log.d(Constants.LOG_TAG, "Showing splash");
-            return;
         }
 
 
@@ -83,6 +81,12 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if(!splashShown) {
+            splashShown = true;
+            return;
+        }
+
         // check if configured
         SharedPreferences parkItEntryScannerConfig = this.getSharedPreferences(
                 Constants.SHARED_PREFERENCES_KEY, 0);
