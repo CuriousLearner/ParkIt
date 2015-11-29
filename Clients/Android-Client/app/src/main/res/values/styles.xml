@@ -41,6 +41,7 @@
         <!--<item name="colorAccent">#FFFFFF</item>-->
         <item name="colorAccent">#000000</item>
         <item name="singleAccount">true</item>
+        <item name="drawerType">@integer/DRAWERTYPE_CUSTOM</item>
     </style>
 
     <style name="ParkItColorTheme" parent="Base.Theme.AppCompat.Light">

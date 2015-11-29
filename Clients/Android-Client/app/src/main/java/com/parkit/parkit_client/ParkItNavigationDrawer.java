@@ -1,6 +1,8 @@
 package com.parkit.parkit_client;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.joanzapata.android.iconify.IconDrawable;
 import com.joanzapata.android.iconify.Iconify;
@@ -24,6 +26,13 @@ public class ParkItNavigationDrawer extends MaterialNavigationDrawer {
 
     @Override
     public void init(Bundle savedInstanceState) {
+
+        // setup custom header
+        View customHeaderView = LayoutInflater.from(this)
+                .inflate(R.layout.custom_header_layout, null);
+        this.setDrawerHeaderCustom(customHeaderView);
+
+
         MaterialSection accountSection  = newSection(
                 "My Account",
                 new IconDrawable(this, Iconify.IconValue.fa_cogs),
