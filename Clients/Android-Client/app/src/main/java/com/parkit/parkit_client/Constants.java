@@ -28,7 +28,7 @@ public class Constants {
 
 
     // variable
-    public static String PARKIT_HOST_ADDRESS = "http://192.168.1.4:5000";
+    public static String PARKIT_HOST_ADDRESS = "http://192.168.1.2:5000";
 
 
 

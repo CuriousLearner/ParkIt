@@ -260,7 +260,6 @@ public class LoginActivity extends ActionBarActivity {
             // save customer details
 
 
-            Utils.showShortToast("Successfully Logged In", ctx);
 
 
 
