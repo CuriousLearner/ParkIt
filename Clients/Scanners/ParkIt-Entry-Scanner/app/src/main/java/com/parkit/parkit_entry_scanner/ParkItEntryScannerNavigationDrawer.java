@@ -4,6 +4,8 @@ package com.parkit.parkit_entry_scanner;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -25,6 +27,12 @@ public class ParkItEntryScannerNavigationDrawer extends MaterialNavigationDrawer
 
     @Override
     public void init(Bundle bundle) {
+
+        // setup header
+        View customHeaderView = LayoutInflater.from(this)
+                .inflate(R.layout.custom_header_layout, null);
+        this.setDrawerHeaderCustom(customHeaderView);
+
         MaterialSection scannerSection, configSection, dynamicAPIHostConfigSection;
 
 

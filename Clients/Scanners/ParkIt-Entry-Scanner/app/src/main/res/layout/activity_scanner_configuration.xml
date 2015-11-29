@@ -25,7 +25,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/edit_parking_lot_id"
             android:inputType="number"
-            android:hint="@string/abc_search_hint"
+            android:hint="@string/hint_parking_lot_id"
             />
     </LinearLayout>
 
@@ -41,9 +41,10 @@
             android:text="@string/label_vehicle_type"
             />
         <Spinner
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/spinner_vehicle_type"
+            android:background="@drawable/card_border_background"
             />
 
     </LinearLayout>

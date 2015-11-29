@@ -33,6 +33,7 @@
     <string name="label_refresh_api">Refresh API Configuration</string>
     <string name="hint_api_host_address">host address ex: 192.168.1.1 …</string>
     <string name="title_activity_splash_screen">SplashScreenActivity</string>
+    <string name="hint_parking_lot_id">Parking Lot ID …</string>
 
 
 
