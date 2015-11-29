@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Config;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -27,6 +29,12 @@ public class ParkItExitScannerNavigationDrawer extends MaterialNavigationDrawer 
 
     @Override
     public void init(Bundle bundle) {
+
+        // setup custom header
+        View customerHeaderView = LayoutInflater.from(this)
+                .inflate(R.layout.custom_header_layout, null);
+        this.setDrawerHeaderCustom(customerHeaderView);
+
         MaterialSection scannerSection = newSection(
                 "Exit Scanner",
                 new IconDrawable(this, Iconify.IconValue.fa_barcode),
